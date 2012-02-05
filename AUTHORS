@@ -1,0 +1,22 @@
+Volume Icon authors/contributors:
+
+Maato <maato@softwarebakery.com>
+ - Developer
+ 
+David Gidwani <david.gidwani@gmail.com>
+ - Hotkey support
+ 
+Mihail Szabolcs
+ - Notifications
+
+Matthias Frei
+ - Show notification only when hotkeys are pressed or when scrolling the icon.
+ - Make the volume slider popup downwards if no space is left above the icon.
+
+Jean-Pierre Demailly <demailly@fourier.ujf-grenoble.fr>
+ - Option to use a horizontal slider
+ - Option to show the numerical value of the sound level on the slider
+
+Matt Boyer
+ - Added support for 8-bit OSS sliders and improved configure.ac for OSS
+

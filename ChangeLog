@@ -1,0 +1,56 @@
+0.4.6:
+	- Changed the default card to use from "hw:0" to "default" as pointed out
+	  by Christoph Wickert.
+
+0.4.5:
+	- Added support for 8-bit OSS sliders and improved configure.ac for OSS by
+	  Matt Boyer.
+	- Added option for using a horizontal slider and showing the numerical value
+	  of the sound level thanks to Jean-Pierre Demailly.
+
+0.4.4:
+	- Some minor fixes thanks to Matthias Frei.
+	- Show notification only when hotkeys are pressed or when scrolling on the
+	  icon.
+	- Make the volume slider popup downwards if no space is left above the icon.
+
+0.4.3:
+	- Integrated Mihail Szabolcs' fork which consisted of:
+		- Optional notification support.
+		- More compatible up an down hotkey identifiers.
+		- Support for multiple sound cards, configurable via the configuration
+		  file.
+
+0.4.2:
+	- Added dependency for X11 so that -lX11 gets linked (required by bind.c)
+
+0.4.1:
+	- Instead of requiring libkeybinder, the libkeybinder source files are now
+	  compiled into volumeicon.
+
+0.4.0:
+	- Added hotkey support based on David Gidwani's patch. This adds a new
+	  dependancy for libkeybinder.
+
+0.3.0:
+	- Added oss support.
+
+0.2.0:
+	- Removed deprecated property from preferences.ui
+	- Cache icons
+
+0.1.1:
+	- Theme combobox in preferences menu is now populated by listing directories
+	  in the icons directory.
+	- Moved config to separate module.
+	- Moved appicon.svg to gui directory.
+
+0.1.0:
+	- Added mute support.
+	- Launching mixer from menu instead of click on the icon.
+	- Automatically choose first channel instead of 'Master'.
+	- Changed default settings.
+	- Only show channels with playback volume.
+
+0.0.1:
+	- First release.

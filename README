@@ -1,0 +1,13 @@
+[Compilation]
+  ./configure --prefix=/usr
+  make
+  sudo make install
+
+[Configuration]
+  --enable-oss:    By default Volume Icon will be built with ALSA as its
+                   backend. Note that it is not possible to build with both ALSA
+                   and OSS support at the moment, so using this flag will
+                   disable ALSA support.
+                 
+  --enable-notify: Enables notifications, this adds a dependency for
+                   libnotify >= 0.5.0.
