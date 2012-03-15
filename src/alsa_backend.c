@@ -64,7 +64,11 @@ static int asound_elem_event(snd_mixer_elem_t * elem, unsigned int mask)
 static gboolean asound_poll_cb(GIOChannel * source, GIOCondition condition,
 	gpointer data)
 {
-	snd_mixer_handle_events(m_mixer);
+	int retval = snd_mixer_handle_events(m_mixer);
+	if(retval < 0) {
+		fprintf(stderr, "snd_mixer_handle_events: %s\n", snd_strerror(retval));
+		return FALSE;
+	}
 	return TRUE;
 }
 
