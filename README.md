@@ -6,19 +6,19 @@ Volume Icon aims to be a lightweight volume control that sits in your systray.
 
 ## Installation
 
-  `./configure --prefix=/usr
-  make
+  `./configure --prefix=/usr  
+  make  
   sudo make install`
 
 ## Configuration
 
-`--enable-oss`
+`--enable-oss`  
   By default Volume Icon will be built with ALSA as its  
   backend. Note that it is not possible to build with both ALSA  
   and OSS support at the moment, so using this flag will  
   disable ALSA support.
 
-`--enable-notify`
+`--enable-notify`  
   Enables notifications, this adds a dependency for  
   libnotify >= 0.5.0.
 
