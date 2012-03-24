@@ -6,9 +6,9 @@ Volume Icon aims to be a lightweight volume control that sits in your systray.
 
 ## Installation
 
-  `./configure --prefix=/usr  
-  make  
-  sudo make install`
+    ./configure --prefix=/usr  
+    make  
+    sudo make install
 
 ## Configuration
 
