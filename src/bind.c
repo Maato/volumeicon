@@ -199,7 +199,7 @@ grab_ungrab (GdkWindow *rootwin,
 	                 XkbAllClientInfoMask,
 	                 XkbUseCoreKbd);
 
-	gdk_keymap_get_entries_for_keyval(NULL, keyval, &keys, &n_keys);
+	gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), keyval, &keys, &n_keys);
 
 	if (n_keys == 0)
 		return FALSE;
