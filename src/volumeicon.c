@@ -146,7 +146,7 @@ static gboolean preferences_window_delete_event(GtkWidget * widget,
 	return FALSE;
 }
 
-static void preferences_window_destroy(GtkObject * object, gpointer user_data)
+static void preferences_window_destroy(GObject * object, gpointer user_data)
 {
 	PreferencesGui * gui = (PreferencesGui*)user_data;
 	free(gui);
@@ -534,11 +534,7 @@ static void status_icon_on_button_release(GtkStatusIcon * status_icon,
 	GdkEventButton * event, gpointer user_data)
 {
 	if(event->button == 1 && config_get_left_mouse_slider() &&
-	#if GTK_CHECK_VERSION(2, 20, 0)
 		!gtk_widget_get_visible(m_scale_window))
-	#else
-		!GTK_WIDGET_VISIBLE(m_scale_window))
-	#endif
 	{
 		gint sizex;
 		gint sizey;
@@ -634,12 +630,12 @@ static void status_icon_on_popup_menu(GtkStatusIcon * status_icon, guint button,
 	g_signal_connect(G_OBJECT(about), "activate",
 		G_CALLBACK(menu_about_on_activate), NULL);
 
-	gtk_menu_append(gtkMenu, volcontrol);
-	gtk_menu_append(gtkMenu, separator1);
-	gtk_menu_append(gtkMenu, preferences);
-	gtk_menu_append(gtkMenu, about);
-	gtk_menu_append(gtkMenu, separator2);
-	gtk_menu_append(gtkMenu, quit);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), volcontrol);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator1);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), preferences);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), about);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), separator2);
+	gtk_menu_shell_append(GTK_MENU_SHELL(gtkMenu), quit);
 
 	gtk_widget_show_all(gtkMenu);
 
@@ -714,12 +710,8 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
 	{
 		gchar buffer[32];
 		g_sprintf(buffer, "%s: %d%%", backend_get_channel(), volume);
-		#if GTK_CHECK_VERSION(2,16,0)
 		gtk_status_icon_set_tooltip_text(m_status_icon, buffer);
-		#else
-		gtk_status_icon_set_tooltip(m_status_icon, buffer);
-		#endif
-		
+
 		#ifdef COMPILEWITH_NOTIFY
 		notify_notification_set_hint_int32(m_notification, "value",
 			(gint)volume);
