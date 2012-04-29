@@ -1,0 +1,90 @@
+# French translations for volumeicon package.
+# Copyright (C) 2012 THE volumeicon'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the volumeicon package.
+# Gauvain Pocentek <gauvain@pocentek.net>, 2012.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: volumeicon 0.4.6\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-04-29 09:59+0200\n"
+"PO-Revision-Date: 2012-04-29 10:06+0200\n"
+"Last-Translator: Gauvain Pocentek <gauvain@pocentek.net>\n"
+"Language-Team: French\n"
+"Language: fr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ASCII\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "Préférences"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Channel"
+msgstr "Canal"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Icon Theme"
+msgstr "Thème d'icônes"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "External mixer"
+msgstr "Mixeur externe"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "Volume adjustment"
+msgstr "Ajustement du volume"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "<b>Status Icon</b>"
+msgstr "<b>Icône de status</b>"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Mute Volume"
+msgstr "Sourdine"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "Show Slider"
+msgstr "Afficher le curseur"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>Action du bouton gauche de souris</b>"
+
+#: ../data/gui/preferences.ui.h:11
+msgid "Open Mixer"
+msgstr "Ouvrir le mixeur"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>Ation du bouton du milieu de souris</b>"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Use Horizontal Slider"
+msgstr "Utiliser un curseur horizontal"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "Show Sound Level"
+msgstr "Afficher le niveau"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>Préférences d'agencement</b>"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "column"
+msgstr "Colonne"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "column2"
+msgstr "Colonne2"
+
+#: ../data/gui/preferences.ui.h:18
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Touches</b>"
