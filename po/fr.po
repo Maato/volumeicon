@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volumeicon 0.4.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-29 09:59+0200\n"
+"POT-Creation-Date: 2012-04-29 10:23+0200\n"
 "PO-Revision-Date: 2012-04-29 10:06+0200\n"
 "Last-Translator: Gauvain Pocentek <gauvain@pocentek.net>\n"
 "Language-Team: French\n"
@@ -55,15 +55,15 @@ msgstr "Afficher le curseur"
 
 #: ../data/gui/preferences.ui.h:10
 msgid "<b>Left Mouse Button Action</b>"
-msgstr "<b>Action du bouton gauche de souris</b>"
+msgstr "<b>Bouton gauche de la souris</b>"
 
-#: ../data/gui/preferences.ui.h:11
+#: ../data/gui/preferences.ui.h:11 ../src/volumeicon.c:618
 msgid "Open Mixer"
 msgstr "Ouvrir le mixeur"
 
 #: ../data/gui/preferences.ui.h:12
 msgid "<b>Middle Mouse Button Action</b>"
-msgstr "<b>Ation du bouton du milieu de souris</b>"
+msgstr "<b>Bouton du milieu de la souris</b>"
 
 #: ../data/gui/preferences.ui.h:13
 msgid "Use Horizontal Slider"
@@ -71,20 +71,30 @@ msgstr "Utiliser un curseur horizontal"
 
 #: ../data/gui/preferences.ui.h:14
 msgid "Show Sound Level"
-msgstr "Afficher le niveau"
+msgstr "Afficher le niveau sonore"
 
 #: ../data/gui/preferences.ui.h:15
 msgid "<b>Layout Preferences</b>"
-msgstr "<b>Préférences d'agencement</b>"
+msgstr "<b>Préférences d'affichage</b>"
 
 #: ../data/gui/preferences.ui.h:16
-msgid "column"
-msgstr "Colonne"
-
-#: ../data/gui/preferences.ui.h:17
-msgid "column2"
-msgstr "Colonne2"
-
-#: ../data/gui/preferences.ui.h:18
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Touches</b>"
+
+#: ../src/volumeicon.c:417
+msgid "Volume Up"
+msgstr "Plus fort"
+
+#: ../src/volumeicon.c:420
+msgid "Volume Down"
+msgstr "Moins fort"
+
+#: ../src/volumeicon.c:423
+msgid "Mute"
+msgstr "Sourdine"
+
+#~ msgid "column"
+#~ msgstr "Colonne"
+
+#~ msgid "column2"
+#~ msgstr "Colonne2"
