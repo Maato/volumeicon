@@ -1,4 +1,4 @@
 AUTOMAKE_OPTIONS = foreign
-SUBDIRS = src data
+SUBDIRS = src data po
 
 pkgconfigdir = $(datadir)/volumeicon
