@@ -25,6 +25,7 @@
 #include <assert.h>
 #include <gtk/gtk.h>
 #include <glib/gstdio.h>
+#include <glib/gi18n.h>
 #include <signal.h>
 #include <unistd.h>
 
@@ -856,6 +857,10 @@ static void hotkey_handle(const char * key, void * user_data)
 //##############################################################################
 int main(int argc, char * argv[])
 {
+    bindtextdomain(GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
+    textdomain(GETTEXT_PACKAGE);
+
 	gtk_init(&argc, &argv);
 	signal(SIGCHLD, SIG_IGN);
 
