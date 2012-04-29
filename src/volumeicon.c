@@ -414,13 +414,13 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 
 	// Fill the hotkey binding model
 	gtk_list_store_append(gui->hotkey_store, &tree_iter);
-	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, "Volume Up", 1,
+	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, _("Volume Up"), 1,
 		config_get_hotkey_up(), 2, (int)UP, 3, config_get_hotkey_up_enabled(), -1);
 	gtk_list_store_append(gui->hotkey_store, &tree_iter);
-	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, "Volume Down", 1,
+	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, _("Volume Down"), 1,
 		config_get_hotkey_down(), 2, (int)DOWN, 3, config_get_hotkey_down_enabled(), -1);
 	gtk_list_store_append(gui->hotkey_store, &tree_iter);
-	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, "Mute", 1,
+	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, _("Mute"), 1,
 		config_get_hotkey_mute(), 2, (int)MUTE, 3, config_get_hotkey_mute_enabled(), -1);
 
 	// Initialize widgets / connect signals
@@ -615,7 +615,7 @@ static void status_icon_on_popup_menu(GtkStatusIcon * status_icon, guint button,
 {
 	GtkWidget * gtkMenu = gtk_menu_new();
 
-	GtkWidget * volcontrol = gtk_image_menu_item_new_with_label("Open Mixer");
+	GtkWidget * volcontrol = gtk_image_menu_item_new_with_label(_("Open Mixer"));
 	GtkWidget * separator1 = gtk_separator_menu_item_new();
 	GtkWidget * preferences = gtk_image_menu_item_new_from_stock(
 		"gtk-preferences", NULL);
