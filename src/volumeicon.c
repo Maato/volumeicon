@@ -132,6 +132,7 @@ typedef struct
 	GtkCheckButton * show_sound_level_checkbutton;
 	GtkCellRenderer * cra_hotkey;
 	GtkCellRendererToggle * crt_hotkey;
+	GtkCheckButton * use_transparent_background_checkbutton;
 } PreferencesGui;
 
 //##############################################################################
@@ -320,6 +321,16 @@ static void preferences_cra_accel_edited(GtkCellRendererAccel * renderer,
 	}
 }
 
+static void preferences_use_transparent_background_checkbutton_toggled(GtkCheckButton * widget,
+	gpointer user_data)
+{
+	gboolean active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+	config_set_use_transparent_background(active);
+	gtk_widget_destroy(m_scale);
+	gtk_widget_destroy(m_scale_window);
+	scale_setup();
+}
+
 // Menu handlers
 static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gpointer user_data)
@@ -348,6 +359,7 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->show_sound_level_checkbutton = GTK_CHECK_BUTTON(getobj("show_sound_level"));
 	gui->cra_hotkey = GTK_CELL_RENDERER(getobj("cra_hotkey"));
 	gui->crt_hotkey = GTK_CELL_RENDERER_TOGGLE(getobj("crt_hotkey"));
+	gui->use_transparent_background_checkbutton = GTK_CHECK_BUTTON(getobj("use_transparent_background"));
 	#undef getobj
 
 	// Set the window icon
@@ -381,6 +393,9 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->show_sound_level_checkbutton),
 		config_get_show_sound_level());
+
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->use_transparent_background_checkbutton),
+		config_get_use_transparent_background());
 
 	// Fill the channel model and combobox
 	GtkTreeIter tree_iter;
@@ -452,6 +467,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		preferences_cra_accel_edited), (gpointer)gui);
 	g_signal_connect(G_OBJECT(gui->crt_hotkey), "toggled", G_CALLBACK(
 		preferences_crt_toggled), (gpointer)gui);
+	g_signal_connect(G_OBJECT(gui->use_transparent_background_checkbutton), "toggled", G_CALLBACK(
+		preferences_use_transparent_background_checkbutton_toggled), (gpointer)gui);
 
 	gtk_widget_show_all(gui->window);
 }
@@ -798,8 +815,74 @@ static void notification_show()
 	#endif
 }
 
+static void render_widget (cairo_t *cairo_context, gint width, gint height)
+{
+	cairo_set_source_rgba (cairo_context, 1.0, 1.0, 1.0, 0.0);
+	cairo_set_operator (cairo_context, CAIRO_OPERATOR_SOURCE);
+	cairo_paint (cairo_context);
+}
+
+static void update_widget (GtkWidget *widget, gint width, gint height)
+{
+	cairo_surface_t *mask;
+	cairo_region_t *mask_region;
+
+	mask = cairo_image_surface_create(CAIRO_FORMAT_A1, width, height);
+	if (cairo_surface_status(mask) == CAIRO_STATUS_SUCCESS) {
+
+		cairo_t *cairo_context = cairo_create(mask);
+		if (cairo_status(cairo_context) == CAIRO_STATUS_SUCCESS) {
+
+			render_widget(cairo_context, width, height);
+			cairo_destroy(cairo_context);
+
+			mask_region = gdk_cairo_region_create_from_surface(mask);
+
+			gtk_widget_input_shape_combine_region(widget, NULL);
+			if (!gtk_widget_is_composited(widget))
+				gtk_widget_input_shape_combine_region(widget, mask_region);
+
+			gtk_widget_shape_combine_region(widget, NULL);
+			if (!gtk_widget_is_composited(widget))
+				gtk_widget_shape_combine_region(widget, mask_region);
+
+			cairo_region_destroy(mask_region);
+		}
+
+		cairo_surface_destroy(mask);
+	}
+}
+
+static gboolean on_configure (GtkWidget *widget, GdkEventConfigure *event, gpointer user_data)
+{
+	static gint width = 0, height = 0;
+	if (width != event->width || height != event->height) {
+		width  = event->width;
+		height = event->height;
+		update_widget (widget, width, height);
+	}
+	return FALSE;
+}
+
+static gboolean on_draw (GtkWidget *widget, cairo_t *cairo_context, gpointer user_data)
+{
+	render_widget(cairo_context,
+		gtk_widget_get_allocated_width(widget),
+		gtk_widget_get_allocated_height(widget));
+	return FALSE;
+}
+
+static void on_composited_changed (GtkWidget* window, gpointer user_data)
+{
+	gtk_widget_destroy(m_scale);
+	gtk_widget_destroy(m_scale_window);
+	scale_setup();
+}
+
 static void scale_setup()
 {
+	GdkScreen *screen;
+
 	if(config_get_use_horizontal_slider())
 		m_scale = gtk_hscale_new_with_range(0.0, 100.0, 1.0);
 	else
@@ -808,6 +891,26 @@ static void scale_setup()
 	gtk_scale_set_draw_value(GTK_SCALE(m_scale), config_get_show_sound_level());
 
 	m_scale_window = gtk_window_new(GTK_WINDOW_POPUP);
+
+	screen = gtk_widget_get_screen(GTK_WIDGET(m_scale_window));
+	if (gdk_screen_is_composited(screen) && config_get_use_transparent_background()) {
+		GdkVisual *visual = gdk_screen_get_rgba_visual(screen);
+		if (visual) {
+			gtk_widget_set_visual(GTK_WIDGET(m_scale_window), visual);
+			gtk_widget_set_app_paintable(GTK_WIDGET(m_scale_window), TRUE);
+			gtk_widget_realize(GTK_WIDGET(m_scale_window));
+			gdk_window_set_background_pattern(gtk_widget_get_window(GTK_WIDGET(m_scale_window)), NULL);
+			gtk_window_set_type_hint(GTK_WINDOW(m_scale_window), GDK_WINDOW_TYPE_HINT_DOCK);
+
+			g_signal_connect(G_OBJECT(m_scale_window), "draw", G_CALLBACK(on_draw), NULL);
+			g_signal_connect(G_OBJECT(m_scale_window), "configure-event", G_CALLBACK(on_configure), NULL);
+
+			update_widget(GTK_WIDGET(m_scale_window),
+				gtk_widget_get_allocated_width(GTK_WIDGET(m_scale_window)),
+				gtk_widget_get_allocated_height(GTK_WIDGET(m_scale_window)));
+		}
+	}
+
 	gtk_window_set_decorated(GTK_WINDOW(m_scale_window), FALSE);
 	gtk_window_set_skip_pager_hint(GTK_WINDOW(m_scale_window), TRUE);
 	gtk_window_set_skip_taskbar_hint(GTK_WINDOW(m_scale_window), TRUE);
@@ -827,6 +930,8 @@ static void scale_setup()
 
 	g_signal_connect(G_OBJECT(m_scale), "value-changed",
 		G_CALLBACK(scale_value_changed), NULL);
+	g_signal_connect(G_OBJECT(m_scale_window), "composited-changed",
+		G_CALLBACK(on_composited_changed), NULL);
 }
 
 static void hotkey_handle(const char * key, void * user_data)
