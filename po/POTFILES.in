@@ -1,0 +1,2 @@
+[type: gettext/glade]data/gui/preferences.ui
+src/volumeicon.c
