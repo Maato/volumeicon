@@ -60,7 +60,7 @@ static gboolean m_use_transparent_background = FALSE;
 static void config_load_default()
 {
 	if(!m_helper_program)
-		config_set_helper("xterm -e 'alsamixer'");
+		config_set_helper(DEFAULT_MIXERAPP);
 	if(!m_channel)
 		config_set_channel(NULL);
 	if(!m_card)
