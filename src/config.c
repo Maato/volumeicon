@@ -321,12 +321,13 @@ void config_write()
 	g_key_file_free(kf);
 }
 
-void config_initialize()
+void config_initialize(gchar * config_name)
 {
 	// Build config directory name
 	gchar * config_dir = g_build_filename(g_get_user_config_dir(),
 		CONFIG_DIRNAME, NULL);
-	m_config_file = g_build_filename(config_dir, CONFIG_FILENAME, NULL);
+	m_config_file = g_build_filename(config_dir,
+		config_name ? config_name : CONFIG_FILENAME, NULL);
 
 	// Make sure config directory exists
 	if(!g_file_test(config_dir, G_FILE_TEST_IS_DIR))

@@ -966,7 +966,15 @@ int main(int argc, char * argv[])
     bind_textdomain_codeset(GETTEXT_PACKAGE, "UTF-8");
     textdomain(GETTEXT_PACKAGE);
 
-	gtk_init(&argc, &argv);
+	// Initialize gtk with arguments
+	GError **errors = 0;
+	gchar * config_name = 0;
+	GOptionEntry options[] = {
+		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
+			_("Alternate name to use for config file, default is volumeicon"), "name" },
+		{ NULL }
+	};
+	gtk_init_with_args(&argc, &argv, "", options, "", errors);
 	signal(SIGCHLD, SIG_IGN);
 
 	// Setup OSD Notification
@@ -1009,7 +1017,7 @@ int main(int argc, char * argv[])
 	#endif
 
 	// Setup
-	config_initialize();
+	config_initialize(config_name);
 	backend_setup(config_get_card(), config_get_channel(), volume_icon_on_volume_changed);
 	m_volume = backend_get_volume();
 	m_mute = backend_get_mute();
