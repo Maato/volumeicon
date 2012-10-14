@@ -515,7 +515,7 @@
                                       <object class="GtkTreeViewColumn" id="treeviewcolumn3">
                                         <property name="sizing">fixed</property>
                                         <property name="fixed_width">24</property>
-                                        <property name="title" translatable="yes">column</property>
+                                        <property name="title" translatable="no">column</property>
                                         <child>
                                           <object class="GtkCellRendererToggle" id="crt_hotkey"/>
                                           <attributes>
@@ -528,7 +528,7 @@
                                       <object class="GtkTreeViewColumn" id="treeviewcolumn1">
                                         <property name="sizing">fixed</property>
                                         <property name="fixed_width">160</property>
-                                        <property name="title" translatable="yes">column</property>
+                                        <property name="title" translatable="no">column</property>
                                         <child>
                                           <object class="GtkCellRendererText" id="cellrenderertext3"/>
                                           <attributes>
@@ -540,7 +540,7 @@
                                     <child>
                                       <object class="GtkTreeViewColumn" id="treeviewcolumn2">
                                         <property name="sizing">fixed</property>
-                                        <property name="title" translatable="yes">column2</property>
+                                        <property name="title" translatable="no">column2</property>
                                         <child>
                                           <object class="GtkCellRendererAccel" id="cra_hotkey">
                                             <property name="editable">True</property>

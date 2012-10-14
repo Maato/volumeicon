@@ -15,6 +15,15 @@ AC_TYPE_PID_T
 AC_TYPE_SIGNAL
 AC_FUNC_FORK
 
+AC_PROG_INTLTOOL([0.23])
+
+GETTEXT_PACKAGE=volumeicon
+AC_SUBST(GETTEXT_PACKAGE)
+AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE, "$GETTEXT_PACKAGE")
+ALL_LINGUAS=""
+AM_GLIB_GNU_GETTEXT
+AM_GLIB_DEFINE_LOCALEDIR(LOCALEDIR)
+
 # Checks for command line options
 AC_ARG_ENABLE([oss],
   [  --disable-oss    disable oss],
@@ -89,6 +98,7 @@ AM_CONDITIONAL(ENABLE_OSS, test "$oss" = "yes")
 
 AC_CONFIG_FILES(Makefile \
 		src/Makefile \
-		data/Makefile)
+		data/Makefile \
+		po/Makefile.in)
 
 AC_OUTPUT
