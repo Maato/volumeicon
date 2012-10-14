@@ -95,6 +95,13 @@ AC_SUBST(OSS_CFLAGS)
 
 AM_CONDITIONAL(ENABLE_OSS, test "$oss" = "yes")
 
+DEFAULT_MIXERAPP="xterm -e 'alsamixer'"
+AC_ARG_WITH(default-mixerapp,
+[  --with-default-mixerapp=appname
+                           Default command for "Open Mixer" menu item
+                           (default: "xterm -e 'alsamixer'")],
+DEFAULT_MIXERAPP=$withval)
+AC_DEFINE_UNQUOTED(DEFAULT_MIXERAPP,"${DEFAULT_MIXERAPP}",[Default mixer application])
 
 AC_CONFIG_FILES(Makefile \
 		src/Makefile \
