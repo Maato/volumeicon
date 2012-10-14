@@ -93,7 +93,7 @@ int asound_get_volume()
 	long pmin, pmax, value;
 	snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
 	snd_mixer_selem_get_playback_volume(m_elem, 0, &value);
-	return 100 * value / pmax;
+	return 100 * (value - pmin) / (pmax - pmin);
 }
 
 gboolean asound_get_mute()
@@ -214,6 +214,6 @@ void asound_set_volume(int volume)
 
 	long pmin, pmax;
 	snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
-	long value = pmax * volume / 100;
+	long value = pmin + (pmax-pmin) * volume / 100;
 	snd_mixer_selem_set_playback_volume_all(m_elem, value);
 }
