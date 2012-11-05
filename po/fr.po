@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volumeicon 0.4.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-04-29 10:23+0200\n"
+"POT-Creation-Date: 2012-11-05 21:30+0100\n"
 "PO-Revision-Date: 2012-04-29 10:06+0200\n"
 "Last-Translator: Gauvain Pocentek <gauvain@pocentek.net>\n"
 "Language-Team: French\n"
@@ -57,7 +57,7 @@ msgstr "Afficher le curseur"
 msgid "<b>Left Mouse Button Action</b>"
 msgstr "<b>Bouton gauche de la souris</b>"
 
-#: ../data/gui/preferences.ui.h:11 ../src/volumeicon.c:618
+#: ../data/gui/preferences.ui.h:11 ../src/volumeicon.c:637
 msgid "Open Mixer"
 msgstr "Ouvrir le mixeur"
 
@@ -74,27 +74,29 @@ msgid "Show Sound Level"
 msgstr "Afficher le niveau sonore"
 
 #: ../data/gui/preferences.ui.h:15
+msgid "Use Transparent Background (requires compositor)"
+msgstr "Utiliser un fond transparent (compositeur requis)"
+
+#: ../data/gui/preferences.ui.h:16
 msgid "<b>Layout Preferences</b>"
 msgstr "<b>Préférences d'affichage</b>"
 
-#: ../data/gui/preferences.ui.h:16
+#: ../data/gui/preferences.ui.h:17
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Touches</b>"
 
-#: ../src/volumeicon.c:417
+#: ../src/volumeicon.c:431
 msgid "Volume Up"
 msgstr "Plus fort"
 
-#: ../src/volumeicon.c:420
+#: ../src/volumeicon.c:434
 msgid "Volume Down"
 msgstr "Moins fort"
 
-#: ../src/volumeicon.c:423
+#: ../src/volumeicon.c:437
 msgid "Mute"
 msgstr "Sourdine"
 
-#~ msgid "column"
-#~ msgstr "Colonne"
-
-#~ msgid "column2"
-#~ msgstr "Colonne2"
+#: ../src/volumeicon.c:976
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "Nom alternatif du fichier de configuration, le défaut est volumeicon"

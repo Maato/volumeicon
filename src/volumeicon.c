@@ -331,7 +331,7 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 {
 
 	if( gui ){
-		gtk_window_present(gui->window);
+		gtk_window_present(GTK_WINDOW(gui->window));
 		return;
 	}
 
@@ -524,13 +524,18 @@ static gboolean scale_timeout(gpointer data)
 	GdkRectangle icon;
 
 	gtk_window_get_position(GTK_WINDOW(m_scale_window), &window.x, &window.y);
-	gtk_window_get_size(GTK_WINDOW(m_scale_window), &window.width,
-		&window.height);
+	gtk_window_get_size(GTK_WINDOW(m_scale_window), &window.width, &window.height);
 	gtk_status_icon_get_geometry(m_status_icon, NULL, &icon, NULL);
 
+	GdkWindow *root_window;
+	GdkDeviceManager *device_manager;
+	GdkDevice *pointer;
 	gint x, y;
-	gdk_window_get_pointer(gtk_widget_get_root_window(m_scale_window),
-		&x, &y, NULL);
+
+	root_window = gtk_widget_get_root_window(m_scale_window);
+	device_manager = gdk_display_get_device_manager(gdk_window_get_display(root_window));
+	pointer = gdk_device_manager_get_client_pointer(device_manager);
+	gdk_window_get_device_position(root_window, pointer, &x, &y, NULL);
 
 	if(scale_point_in_rect(&window, x, y) || scale_point_in_rect(&icon, x, y))
 	{
@@ -884,9 +889,9 @@ static void scale_setup()
 	GdkScreen *screen;
 
 	if(config_get_use_horizontal_slider())
-		m_scale = gtk_hscale_new_with_range(0.0, 100.0, 1.0);
+		m_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0.0, 100.0, 1.0);
 	else
-		m_scale =  gtk_vscale_new_with_range(0.0, 100.0, 1.0);
+		m_scale = gtk_scale_new_with_range(GTK_ORIENTATION_VERTICAL, 0.0, 100.0, 1.0);
 	gtk_range_set_inverted(GTK_RANGE(m_scale), TRUE);
 	gtk_scale_set_draw_value(GTK_SCALE(m_scale), config_get_show_sound_level());
 
