@@ -26,10 +26,7 @@
 #include <fcntl.h>
 #include <assert.h>
 #include <stdlib.h>
-#include <glib/gstring.h>
-#include <glib/gstdio.h>
-#include <glib/glist.h>
-#include <glib/giochannel.h>
+#include <glib.h>
 
 #include "oss_backend.h"
 
