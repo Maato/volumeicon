@@ -24,8 +24,10 @@
 #include <alsa/asoundlib.h>
 
 #include <glib.h>
+#include <math.h>
 
 #include "alsa_backend.h"
+#include "alsa_volume_mapping.h"
 
 //##############################################################################
 // Static variables
@@ -90,10 +92,7 @@ int asound_get_volume()
 	assert(m_elem != NULL);
 
 	// Return the current volume value from [0-100]
-	long pmin, pmax, value;
-	snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
-	snd_mixer_selem_get_playback_volume(m_elem, 0, &value);
-	return 100 * (value - pmin) / (pmax - pmin);
+	return rint(100 * get_normalized_playback_volume(m_elem, 0));
 }
 
 gboolean asound_get_mute()
@@ -212,8 +211,5 @@ void asound_set_volume(int volume)
 	assert(m_elem != NULL);
 	assert(volume >= 0 && volume <= 100);
 
-	long pmin, pmax;
-	snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
-	long value = pmin + (pmax-pmin) * volume / 100;
-	snd_mixer_selem_set_playback_volume_all(m_elem, value);
+	set_normalized_playback_volume_all(m_elem, volume / 100.0, 0);
 }
