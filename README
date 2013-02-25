@@ -11,3 +11,10 @@
                  
   --enable-notify: Enables notifications, this adds a dependency for
                    libnotify >= 0.5.0.
+
+  --with-oss-include-path: Location of soundcard.h, defaults first to the value
+                   specified in /etc/oss.conf. If that does not exist
+                   it defaults to /usr/lib/oss/include/sys.
+
+  --with-default-mixerapp: Set the default mixer application, defaults to alsamixer.
+

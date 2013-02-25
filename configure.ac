@@ -1,5 +1,5 @@
 # Process this file with autoconf to produce a configure script
-AC_INIT([volumeicon], [0.4.6], [http://www.softwarebakery.com/maato/volumeicon.html])
+AC_INIT([volumeicon], [0.5.0], [http://www.softwarebakery.com/maato/volumeicon.html])
 
 AM_INIT_AUTOMAKE
 

@@ -1,3 +1,13 @@
+0.5.0:
+	- Use the same volume mapping as alsamixer.
+	- Allow the specification of an alternate name to use for config file via
+	  the command-line option `--config'.
+	- Added `--with-default-mixerapp' configure option.
+	- Added french translation.
+	- Added option for transparent slider background.
+	- Ported to GTK 3.
+	- Fix hanging / 100% CPU usage when pulseaudio is killed.
+
 0.4.6:
 	- Changed the default card to use from "hw:0" to "default" as pointed out
 	  by Christoph Wickert.
