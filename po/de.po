@@ -1,0 +1,106 @@
+# German translations for volumeicon package.
+# Copyright (C) 2013 THE volumeicon'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the volumeicon package.
+# Jonathan Hooverman <Jonathan.Hooverman@gmail.com>, 2013.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: volumeicon 0.5.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-05 21:30+0100\n"
+"PO-Revision-Date: 2013-04-21 12:30+0100\n"
+"Last-Translator: Jonathan Hooverman <Jonathan.Hooverman@gmail.com>\n"
+"Language-Team: German\n"
+"Language: de\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Poedit-Language: German\n"
+"X-Poedit-Country: GERMANY\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Channel"
+msgstr "Kanal"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Icon Theme"
+msgstr "Grafik-Thema"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "External mixer"
+msgstr "Externer Mixer"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "Volume adjustment"
+msgstr "Lautstärke-Einstellung"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "<b>Status Icon</b>"
+msgstr "<b>Status Icon</b>"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Mute Volume"
+msgstr "Stummschalten"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "Show Slider"
+msgstr "Schieberegler anzeigen"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>Belegung linke Maustaste</b>"
+
+#: ../data/gui/preferences.ui.h:11
+#: ../src/volumeicon.c:637
+msgid "Open Mixer"
+msgstr "Mixer öffnen"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>Belegung mittlere Maustaste</b>"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Use Horizontal Slider"
+msgstr "Horizontalen Schieberegler benutzen"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "Show Sound Level"
+msgstr "Lautstärke anzeigen"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "Use Transparent Background (requires compositor)"
+msgstr "Transparenten Hintergrund benutzen (Composite erforderlich)"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>Ansicht</b>"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Hotkeys</b>"
+
+#: ../src/volumeicon.c:431
+msgid "Volume Up"
+msgstr "Lauter"
+
+#: ../src/volumeicon.c:434
+msgid "Volume Down"
+msgstr "Leiser"
+
+#: ../src/volumeicon.c:437
+msgid "Mute"
+msgstr "Stumm"
+
+#: ../src/volumeicon.c:976
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "Alternativer Name für die Konfigurationsdatei, der Standardname ist volumeicon"
+
