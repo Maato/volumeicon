@@ -711,18 +711,21 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
 		}
 
 		#ifdef COMPILEWITH_NOTIFY
-		if(icon_number == 1)
-			notify_notification_update(m_notification, APPNAME, NULL,
-				"audio-volume-muted");
-		else if(icon_number <= 3)
-			notify_notification_update(m_notification, APPNAME, NULL,
-				"audio-volume-low");
-		else if(icon_number <= 6)
-			notify_notification_update(m_notification, APPNAME, NULL,
-				"audio-volume-medium");
-		else
-			notify_notification_update(m_notification, APPNAME, NULL,
-				"audio-volume-high");
+		if (m_notification != NULL)
+		{
+			if(icon_number == 1)
+			  notify_notification_update(m_notification, APPNAME, NULL,
+			    "audio-volume-muted");
+			else if(icon_number <= 3)
+			  notify_notification_update(m_notification, APPNAME, NULL,
+			    "audio-volume-low");
+			else if(icon_number <= 6)
+			  notify_notification_update(m_notification, APPNAME, NULL,
+			    "audio-volume-medium");
+			else
+			  notify_notification_update(m_notification, APPNAME, NULL,
+			    "audio-volume-high");
+		}
 		#endif
 
 		icon_cache = icon_number;
@@ -735,8 +738,9 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
 		gtk_status_icon_set_tooltip_text(m_status_icon, buffer);
 
 		#ifdef COMPILEWITH_NOTIFY
-		notify_notification_set_hint_int32(m_notification, "value",
-			(gint)volume);
+		if (m_notification != NULL)
+			notify_notification_set_hint_int32(m_notification, "value",
+				(gint)volume);
 		#endif
 
 		volume_cache = volume;
@@ -816,7 +820,8 @@ static void scale_value_changed(GtkRange * range, gpointer user_data)
 static void notification_show()
 {
 	#ifdef COMPILEWITH_NOTIFY
-	notify_notification_show(m_notification, NULL);
+	if (m_notification != NULL)
+		notify_notification_show(m_notification, NULL);
 	#endif
 }
 
@@ -973,9 +978,17 @@ int main(int argc, char * argv[])
 	// Initialize gtk with arguments
 	GError **errors = 0;
 	gchar * config_name = 0;
+	gboolean notify_off = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
 			_("Alternate name to use for config file, default is volumeicon"), "name" },
+		{ "notify-off", 'n', 0, G_OPTION_ARG_NONE, &notify_off,
+		#ifdef COMPILEWITH_NOTIFY
+			_("Do not show notifications on volume change"),
+		#else
+			_("Ignored, as this is compiled without notification capability"),
+		#endif
+		  NULL },
 		{ NULL }
 	};
 	gtk_init_with_args(&argc, &argv, "", options, "", errors);
@@ -983,19 +996,25 @@ int main(int argc, char * argv[])
 
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
-	if(notify_init(APPNAME))
+	if (!notify_off)
 	{
-		#if NOTIFY_CHECK_VERSION(0,7,0)
-		m_notification = notify_notification_new(APPNAME, NULL, NULL);
-		#else
-		m_notification = notify_notification_new(APPNAME, NULL, NULL, NULL);
-		#endif
-		notify_notification_set_timeout(m_notification, NOTIFY_EXPIRES_DEFAULT);
-		notify_notification_set_hint_string(m_notification, "synchronous", "volume");
-	}
-	else
-	{
-		g_fprintf(stderr, "Failed to initialize notifications\n");
+		if (notify_init(APPNAME))
+		{
+			#if NOTIFY_CHECK_VERSION(0,7,0)
+			m_notification = notify_notification_new(APPNAME, NULL, NULL);
+			#else
+			m_notification = notify_notification_new(APPNAME, NULL, NULL, NULL);
+			#endif
+		}
+
+		if (m_notification != NULL) {
+			notify_notification_set_timeout(m_notification, NOTIFY_EXPIRES_DEFAULT);
+			notify_notification_set_hint_string(m_notification, "synchronous", "volume");
+		}
+		else
+		{
+			g_fprintf(stderr, "Failed to initialize notifications\n");
+		}
 	}
 	#endif
 
@@ -1044,7 +1063,8 @@ int main(int argc, char * argv[])
 	gtk_main();
 
 	#ifdef COMPILEWITH_NOTIFY
-	g_object_unref(G_OBJECT(m_notification));
+	if (m_notification != NULL)
+		g_object_unref(G_OBJECT(m_notification));
 	notify_uninit();
 	#endif
 	
