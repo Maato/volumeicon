@@ -140,6 +140,14 @@ static void notification_show();
 //##############################################################################
 // Static functions
 //##############################################################################
+// Helper
+static inline int clamp_volume(int value)
+{
+	if(value < 0) return 0;
+	if(value > 100) return 100;
+	return value;
+}
+
 // Preferences handlers
 static gboolean preferences_window_delete_event(GtkWidget * widget,
 	GdkEvent * event, gpointer user_data)
@@ -227,7 +235,7 @@ static void preferences_channel_combobox_changed(GtkComboBox * widget,
 		backend_set_channel(channel);
 		config_set_channel(channel);
 		g_free(channel);
-		m_volume = backend_get_volume();
+		m_volume = clamp_volume(backend_get_volume());
 		m_mute = backend_get_mute();
 	}
 	status_icon_update(m_mute, TRUE);
@@ -609,17 +617,13 @@ static void status_icon_on_scroll_event(GtkStatusIcon * status_icon,
 	{
 		case(GDK_SCROLL_UP):
 		case(GDK_SCROLL_RIGHT):
-			m_volume += config_get_stepsize();
+			m_volume = clamp_volume(m_volume + config_get_stepsize());
 			break;
 		case(GDK_SCROLL_DOWN):
 		case(GDK_SCROLL_LEFT):
-			m_volume -= config_get_stepsize();
+			m_volume = clamp_volume(m_volume - config_get_stepsize());
 			break;
 	}
-	if(m_volume < 0)
-		m_volume = 0;
-	if(m_volume > 100)
-		m_volume = 100;
 	backend_set_volume(m_volume);
 	if(m_mute)
 	{
@@ -763,7 +767,7 @@ static void status_icon_setup(gboolean mute)
 static void volume_icon_on_volume_changed(int volume, gboolean mute)
 {
 	m_mute = mute;
-	m_volume = volume;
+	m_volume = clamp_volume(volume);
 	status_icon_update(m_mute, FALSE);
 	scale_update();
 }
@@ -801,12 +805,7 @@ static void scale_value_changed(GtkRange * range, gpointer user_data)
 	if(m_setting_scale_value)
 		return;
 	double value = gtk_range_get_value(range);
-	m_volume = (int)value;
-
-	if(m_volume < 0)
-		m_volume = 0;
-	if(m_volume > 100)
-		m_volume = 100;
+	m_volume = clamp_volume((int)value);
 	backend_set_volume(m_volume);
 	if(m_mute)
 	{
@@ -957,8 +956,7 @@ static void hotkey_handle(const char * key, void * user_data)
 	else
 	{
 		int step = config_get_stepsize();
-		m_volume += (hotkey == UP ? step : -step);
-		m_volume = (m_volume > 100 ? 100 : (m_volume < 0 ? 0 : m_volume));
+		m_volume = clamp_volume(m_volume + (hotkey == UP ? step : -step));
 		backend_set_volume(m_volume);
 		status_icon_update(m_mute, FALSE);
 	}
@@ -1042,7 +1040,7 @@ int main(int argc, char * argv[])
 	// Setup
 	config_initialize(config_name);
 	backend_setup(config_get_card(), config_get_channel(), volume_icon_on_volume_changed);
-	m_volume = backend_get_volume();
+	m_volume = clamp_volume(backend_get_volume());
 	m_mute = backend_get_mute();
 	volume_icon_load_icons();
 	status_icon_setup(m_mute);

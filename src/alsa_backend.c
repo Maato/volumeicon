@@ -209,7 +209,7 @@ void asound_set_mute(gboolean mute)
 void asound_set_volume(int volume)
 {
 	assert(m_elem != NULL);
-	assert(volume >= 0 && volume <= 100);
+	volume = (volume < 0 ? 0 : (volume > 100 ? 100 : volume));
 
 	set_normalized_playback_volume_all(m_elem, volume / 100.0, 0);
 }

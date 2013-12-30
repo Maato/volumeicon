@@ -249,7 +249,7 @@ void oss_set_mute(gboolean mute)
 void oss_set_volume(int volume)
 {
 	assert(m_mixer_fd != -1);
-	assert(volume >= 0 && volume <= 100);
+	volume = (volume < 0 ? 0 : (volume > 100 ? 100 : volume));
 
 	oss_mixer_value vr;
 	vr.dev = m_ext.dev;
