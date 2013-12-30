@@ -1,4 +1,5 @@
 [Compilation]
+  ./autogen.sh
   ./configure --prefix=/usr
   make
   sudo make install
@@ -17,4 +18,7 @@
                    it defaults to /usr/lib/oss/include/sys.
 
   --with-default-mixerapp: Set the default mixer application, defaults to alsamixer.
+
+[Dependencies]
+  To run ./autogen.sh, intltool must be installed.
 
