@@ -824,13 +824,13 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     {
         const gchar *icon_name;
         if(icon_number == 1)
-            icon_name = "audio-volume-muted";
+            icon_name = "audio-volume-muted-panel";
         else if(icon_number <= 3)
-            icon_name = "audio-volume-low";
+            icon_name = "audio-volume-low-panel";
         else if(icon_number <= 6)
-            icon_name = "audio-volume-medium";
+            icon_name = "audio-volume-medium-panel";
         else
-            icon_name = "audio-volume-high";
+            icon_name = "audio-volume-high-panel";
 
         if(config_get_use_gtk_theme())
         {
