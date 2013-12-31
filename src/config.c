@@ -2,7 +2,7 @@
 // volumeicon
 //
 // config.c - a singleton providing configuration values/functions
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -53,6 +53,8 @@ static gboolean m_hotkey_up_enabled = FALSE;
 static gboolean m_hotkey_down_enabled = FALSE;
 static gboolean m_hotkey_mute_enabled = FALSE;
 static gboolean m_use_transparent_background = FALSE;
+static gboolean m_show_notification = TRUE;
+static gint m_notification_type = 0;
 
 //##############################################################################
 // Static functions
@@ -104,6 +106,8 @@ static void config_read()
 	m_hotkey_down_enabled = g_key_file_get_boolean(kf, "Hotkeys", "down_enabled", NULL);
 	m_hotkey_mute_enabled = g_key_file_get_boolean(kf, "Hotkeys", "mute_enabled", NULL);
 	m_use_transparent_background = g_key_file_get_boolean(kf, "StatusIcon", "use_transparent_background", NULL);
+    m_show_notification = g_key_file_get_boolean(kf, "Notification", "show_notification", NULL);
+    m_notification_type = g_key_file_get_integer(kf, "Notification", "notification_type", NULL);
 	g_key_file_free(kf);
 
 	// Load default values for unset keys
@@ -200,6 +204,16 @@ void config_set_use_transparent_background(gboolean active)
 	m_use_transparent_background = active;
 }
 
+void config_set_show_notification(gboolean active)
+{
+    m_show_notification = active;
+}
+
+void config_set_notification_type(gint type)
+{
+    m_notification_type = type;
+}
+
 const gchar * config_get_helper()
 {
 	return m_helper_program;
@@ -285,6 +299,16 @@ gboolean config_get_use_transparent_background()
 	return m_use_transparent_background;
 }
 
+gboolean config_get_show_notification()
+{
+    return m_show_notification;
+}
+
+gint config_get_notification_type()
+{
+    return m_notification_type;
+}
+
 void config_write()
 {
 	assert(m_config_file != NULL);
@@ -313,6 +337,10 @@ void config_write()
 		g_key_file_set_value(kf, "Hotkeys", "down", m_hotkey_down);
 	if(m_hotkey_mute)
 		g_key_file_set_value(kf, "Hotkeys", "mute", m_hotkey_mute);
+    g_key_file_set_boolean(kf, "Notification", "show_notification",
+                           m_show_notification);
+    g_key_file_set_integer(kf, "Notification", "notification_type",
+                           m_notification_type);
 
 	gsize length;
 	gchar * data = g_key_file_to_data(kf, &length, NULL);
@@ -347,3 +375,4 @@ void config_initialize(gchar * config_name)
 
 	g_free(config_dir);
 }
+
