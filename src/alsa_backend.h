@@ -35,5 +35,7 @@ int asound_get_volume();
 gboolean asound_get_mute();
 const gchar * asound_get_channel();
 const GList * asound_get_channel_names();
+const gchar * asound_get_device();
+const GList * asound_get_device_names();
 
 #endif

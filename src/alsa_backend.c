@@ -32,11 +32,12 @@
 //##############################################################################
 // Static variables
 //##############################################################################
-static char m_card[128];
 static snd_mixer_elem_t * m_elem = NULL;
 static char * m_channel = NULL;
+static char * m_device = NULL;
 static snd_mixer_t * m_mixer = NULL;
 static GList * m_channel_names = NULL;
+static GList * m_device_names = NULL;
 static void (*m_volume_changed)(int,gboolean);
 
 //##############################################################################
@@ -82,14 +83,26 @@ const gchar * asound_get_channel()
 	return m_channel;
 }
 
+const gchar * asound_get_device()
+{
+	return m_device;
+}
+
 const GList * asound_get_channel_names()
 {
 	return m_channel_names;
 }
 
+const GList * asound_get_device_names()
+{
+	return m_device_names;
+}
+
 int asound_get_volume()
 {
-	assert(m_elem != NULL);
+	if(m_elem == NULL) {
+		return 0;
+	}
 
 	// Return the current volume value from [0-100]
 	return rint(100 * get_normalized_playback_volume(m_elem, 0));
@@ -97,7 +110,9 @@ int asound_get_volume()
 
 gboolean asound_get_mute()
 {
-	assert(m_elem != NULL);
+	if(m_elem == NULL) {
+		return TRUE;
+	}
 
 	gboolean mute = FALSE;
 	if(snd_mixer_selem_has_playback_switch(m_elem))
@@ -112,18 +127,71 @@ gboolean asound_get_mute()
 void asound_setup(const gchar * card, const gchar * channel,
 	void (*volume_changed)(int,gboolean))
 {
-	// Make sure (for now) that the setup function only gets called once
-	static int asound_setup_called = 0;
-	assert(asound_setup_called == 0);
-	asound_setup_called++;
+	gchar * card_override = NULL; // used to hold a string like hw:0 if a nice
+	                              // device name was given as 'card'
+
+	// Clean up resources from previous calls to setup
+	g_free(m_channel);
+	m_channel = NULL;
+	if(m_elem) {
+		snd_mixer_elem_set_callback(m_elem, NULL);
+		m_elem = NULL;
+	}
+	if(m_mixer) {
+		snd_mixer_close(m_mixer);
+		m_mixer = NULL;
+	}
+	g_list_free_full(m_channel_names, g_free);
+	m_channel_names = NULL;
+	g_list_free_full(m_device_names, g_free);
+	m_device_names = NULL;
 
 	// Save card, volume_changed
-	strcpy(m_card, card);
+	g_free(m_device);
+	m_device = g_strdup(card);
 	m_volume_changed = volume_changed;
+
+	// Populate list of device names
+	int card_number = -1;
+	int ret = snd_card_next(&card_number);
+	snd_ctl_card_info_t * info = NULL;
+	snd_ctl_card_info_alloca(&info);
+	m_device_names = g_list_append(m_device_names, (gpointer)g_strdup("default"));
+	while(ret == 0 && card_number != -1) {
+		char buf[16];
+		sprintf(buf, "hw:%d", card_number);
+		snd_ctl_t * ctl = NULL;
+		if(snd_ctl_open(&ctl, buf, 0) < 0) {
+			continue;
+		}
+		if(snd_ctl_card_info(ctl, info) < 0) {
+			snd_ctl_close(ctl);
+			continue;
+		}
+		snd_ctl_close(ctl);
+
+		gchar * nice_name = g_strdup(snd_ctl_card_info_get_name(info));
+		m_device_names = g_list_append(m_device_names, (gpointer)nice_name);
+
+		if(g_strcmp0(nice_name, m_device) == 0) {
+			g_free(card_override);
+			card_override = g_strdup_printf("hw:%d", card_number);
+		}
+		ret = snd_card_next(&card_number);
+	} 
 
 	// Load the mixer for the provided cardname
 	snd_mixer_open(&m_mixer, 0);
-	snd_mixer_attach(m_mixer, m_card);
+	if(snd_mixer_attach(m_mixer, (card_override != NULL ? card_override : m_device)) < 0) {
+		fprintf(stderr, "Failed to open sound device with name: %s\n", 
+			(card_override != NULL ? card_override : m_device));
+		snd_mixer_close(m_mixer);
+		m_mixer = NULL;
+		g_free(card_override);
+		return;
+	} else {
+		g_free(card_override);
+	}
 	snd_mixer_selem_register(m_mixer, NULL, NULL);
 	snd_mixer_load(m_mixer);
 
@@ -166,8 +234,9 @@ void asound_setup(const gchar * card, const gchar * channel,
 
 void asound_set_channel(const gchar * channel)
 {
-	assert(channel != NULL);
-	assert(m_mixer != NULL);
+	if(m_mixer == NULL || channel == NULL) {
+		return;
+	}
 	if(g_strcmp0(channel, m_channel) == 0)
 		return;
 
@@ -194,7 +263,9 @@ void asound_set_channel(const gchar * channel)
 
 void asound_set_mute(gboolean mute)
 {
-	assert(m_elem != NULL);
+	if(m_elem == NULL) {
+		return;
+	}
 
 	if(snd_mixer_selem_has_playback_switch(m_elem))
 	{
@@ -208,7 +279,9 @@ void asound_set_mute(gboolean mute)
 
 void asound_set_volume(int volume)
 {
-	assert(m_elem != NULL);
+	if(m_elem == NULL) {
+		return;
+	}
 	volume = (volume < 0 ? 0 : (volume > 100 ? 100 : volume));
 
 	set_normalized_playback_volume_all(m_elem, volume / 100.0, 0);

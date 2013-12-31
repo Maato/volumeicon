@@ -80,6 +80,8 @@ typedef struct
 	GtkWidget * window;
 	GtkAdjustment * volume_adjustment;
 	GtkEntry * mixer_entry;
+	GtkComboBox * device_combobox;
+	GtkListStore * device_store;
 	GtkComboBox * channel_combobox;
 	GtkListStore * channel_store;
 	GtkComboBox * theme_combobox;
@@ -119,6 +121,8 @@ static int (*backend_get_volume)(void) = NULL;
 static gboolean (*backend_get_mute)(void) = NULL;
 static const gchar * (*backend_get_channel)(void) = NULL;
 static const GList * (*backend_get_channel_names)(void) = NULL;
+static const gchar * (*backend_get_device)(void) = NULL;
+static const GList * (*backend_get_device_names)(void) = NULL;
 
 // Status
 static int m_volume = 0;
@@ -131,6 +135,7 @@ static GdkPixbuf * m_icons[ICON_COUNT];
 //##############################################################################
 // Function prototypes
 //##############################################################################
+static void volume_icon_on_volume_changed(int volume, gboolean mute);
 static void status_icon_update(gboolean mute, gboolean force);
 static void hotkey_handle(const char * key, void * user_data);
 static void volume_icon_load_icons();
@@ -146,6 +151,44 @@ static inline int clamp_volume(int value)
 	if(value < 0) return 0;
 	if(value > 100) return 100;
 	return value;
+}
+
+static void populate_device_model_and_combobox(PreferencesGui * gui)
+{
+	// Clean existing data
+	gtk_list_store_clear(gui->device_store);
+
+	// Fill the channel model and combobox
+	GtkTreeIter tree_iter;
+	const GList * list_iter = backend_get_device_names();
+	while(list_iter)
+	{
+		gtk_list_store_append(gui->device_store, &tree_iter);
+		gtk_list_store_set(gui->device_store, &tree_iter, 0,
+			(gchar*)list_iter->data, -1);
+		if(g_strcmp0((gchar*)list_iter->data, backend_get_device()) == 0)
+			gtk_combo_box_set_active_iter(gui->device_combobox, &tree_iter);
+		list_iter = g_list_next(list_iter);
+	}
+}
+
+static void populate_channel_model_and_combobox(PreferencesGui * gui)
+{
+	// Clean existing data
+	gtk_list_store_clear(gui->channel_store);
+
+	// Fill the channel model and combobox
+	GtkTreeIter tree_iter;
+	const GList * list_iter = backend_get_channel_names();
+	while(list_iter)
+	{
+		gtk_list_store_append(gui->channel_store, &tree_iter);
+		gtk_list_store_set(gui->channel_store, &tree_iter, 0,
+			(gchar*)list_iter->data, -1);
+		if(g_strcmp0((gchar*)list_iter->data, backend_get_channel()) == 0)
+			gtk_combo_box_set_active_iter(gui->channel_combobox, &tree_iter);
+		list_iter = g_list_next(list_iter);
+	}
 }
 
 // Preferences handlers
@@ -219,6 +262,26 @@ static void preferences_theme_combobox_changed(GtkComboBox * widget,
 	}
 	volume_icon_load_icons();
 	status_icon_update(m_mute, TRUE);
+}
+
+static void preferences_device_combobox_changed(GtkComboBox * widget,
+	gpointer user_data)
+{
+	GtkTreeIter iter;
+	if(gtk_combo_box_get_active_iter(gui->device_combobox, &iter))
+	{
+		gchar * device;
+		gtk_tree_model_get(GTK_TREE_MODEL(gui->device_store), &iter, 0,
+			&device, -1);
+		backend_setup(device, NULL, volume_icon_on_volume_changed);
+		config_set_card(device);
+		config_set_channel(backend_get_channel());
+		m_volume = clamp_volume(backend_get_volume());
+		m_mute = backend_get_mute();
+		g_free(device);
+
+		populate_channel_model_and_combobox(gui);
+	}
 }
 
 static void preferences_channel_combobox_changed(GtkComboBox * widget,
@@ -353,6 +416,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->window = GTK_WIDGET(getobj("window1"));
 	gui->volume_adjustment = GTK_ADJUSTMENT(getobj("volume_adjustment"));
 	gui->mixer_entry = GTK_ENTRY(getobj("mixer_entry"));
+	gui->device_combobox = GTK_COMBO_BOX(getobj("device_combobox"));
+	gui->device_store = GTK_LIST_STORE(getobj("device_name_model"));
 	gui->channel_combobox = GTK_COMBO_BOX(getobj("channel_combobox"));
 	gui->channel_store = GTK_LIST_STORE(getobj("channel_name_model"));
 	gui->theme_combobox = GTK_COMBO_BOX(getobj("theme_combobox"));
@@ -405,20 +470,11 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->use_transparent_background_checkbutton),
 		config_get_use_transparent_background());
 
-	// Fill the channel model and combobox
-	GtkTreeIter tree_iter;
-	const GList * list_iter = backend_get_channel_names();
-	while(list_iter)
-	{
-		gtk_list_store_append(gui->channel_store, &tree_iter);
-		gtk_list_store_set(gui->channel_store, &tree_iter, 0,
-			(gchar*)list_iter->data, -1);
-		if(g_strcmp0((gchar*)list_iter->data, backend_get_channel()) == 0)
-			gtk_combo_box_set_active_iter(gui->channel_combobox, &tree_iter);
-		list_iter = g_list_next(list_iter);
-	}
+	populate_device_model_and_combobox(gui);
+	populate_channel_model_and_combobox(gui);
 
 	// Fill the theme name model and combobox
+	GtkTreeIter tree_iter;
 	gtk_list_store_append(gui->theme_store, &tree_iter);
 	gtk_list_store_set(gui->theme_store, &tree_iter, 0, "Default", -1);
 	if(config_get_use_gtk_theme())
@@ -455,6 +511,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		preferences_window_delete_event), NULL);
 	g_signal_connect(G_OBJECT(gui->close_button), "clicked", G_CALLBACK(
 		preferences_close_button_clicked), NULL);
+	g_signal_connect(G_OBJECT(gui->device_combobox), "changed", G_CALLBACK(
+		preferences_device_combobox_changed), NULL);
 	g_signal_connect(G_OBJECT(gui->channel_combobox), "changed", G_CALLBACK(
 		preferences_channel_combobox_changed), NULL);
 	g_signal_connect(G_OBJECT(gui->theme_combobox), "changed", G_CALLBACK(
@@ -976,10 +1034,13 @@ int main(int argc, char * argv[])
 	// Initialize gtk with arguments
 	GError **errors = 0;
 	gchar * config_name = 0;
+	gchar * device_name = 0;
 	gboolean notify_off = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
 			_("Alternate name to use for config file, default is volumeicon"), "name" },
+		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name, 
+			_("Mixer device name"), "name" },
 		{ "notify-off", 'n', 0, G_OPTION_ARG_NONE, &notify_off,
 		#ifdef COMPILEWITH_NOTIFY
 			_("Do not show notifications on volume change"),
@@ -1035,11 +1096,13 @@ int main(int argc, char * argv[])
 	backend_set_mute = &asound_set_mute;
 	backend_get_channel = &asound_get_channel;
 	backend_get_channel_names = &asound_get_channel_names;
+	backend_get_device = &asound_get_device;
+	backend_get_device_names = &asound_get_device_names;
 	#endif
 
 	// Setup
 	config_initialize(config_name);
-	backend_setup(config_get_card(), config_get_channel(), volume_icon_on_volume_changed);
+	backend_setup(device_name ? device_name : config_get_card(), config_get_channel(), volume_icon_on_volume_changed);
 	m_volume = clamp_volume(backend_get_volume());
 	m_mute = backend_get_mute();
 	volume_icon_load_icons();
