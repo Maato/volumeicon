@@ -63,9 +63,6 @@ enum NOTIFICATION
 // Definitions
 //##############################################################################
 // Resources
-#ifndef DATADIR
-#define DATADIR "../data"
-#endif
 #define PREFERENCES_UI_FILE   DATADIR "/gui/preferences.ui"
 #define ICONS_DIR             DATADIR "/icons"
 #define APP_ICON              DATADIR "/gui/appicon.svg"
