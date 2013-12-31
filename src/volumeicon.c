@@ -215,7 +215,7 @@ static gboolean preferences_window_delete_event(GtkWidget * widget,
 
 static void preferences_window_destroy(GObject * object, gpointer user_data)
 {
-	free(gui);
+	g_free(gui);
 	gui = NULL;
 	config_write();
 }
@@ -437,13 +437,13 @@ static void preferences_notification_combobox_changed(
 static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gpointer user_data)
 {
-
-	if( gui ){
+	if(gui)
+    {
 		gtk_window_present(GTK_WINDOW(gui->window));
 		return;
 	}
 
-	gui = (PreferencesGui*)malloc(sizeof(PreferencesGui));
+	gui = (PreferencesGui *)g_malloc(sizeof *gui);
 
 	gui->builder = gtk_builder_new();
 	gtk_builder_add_from_file(gui->builder, PREFERENCES_UI_FILE, NULL);
@@ -608,6 +608,10 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 
 static void menu_quit_on_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
+    // Destroy the preferences window on shutdown to make sure the current
+    // settings are saved as well.
+    if (gui)
+        gtk_widget_destroy(gui->window);
 	gtk_main_quit();
 }
 
