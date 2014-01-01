@@ -2,7 +2,7 @@
 // volumeicon
 //
 // volumeicon.c - implements the gtk status icon and preferences window
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -50,13 +50,19 @@ enum HOTKEY
 	MUTE
 };
 
+enum NOTIFICATION
+{
+    NOTIFICATION_NATIVE,
+    #ifdef COMPILEWITH_NOTIFY
+    NOTIFICATION_LIBNOTIFY,
+    #endif
+    N_NOTIFICATIONS
+};
+
 //##############################################################################
 // Definitions
 //##############################################################################
 // Resources
-#ifndef DATADIR
-#define DATADIR "../data"
-#endif
 #define PREFERENCES_UI_FILE   DATADIR "/gui/preferences.ui"
 #define ICONS_DIR             DATADIR "/icons"
 #define APP_ICON              DATADIR "/gui/appicon.svg"
@@ -97,6 +103,9 @@ typedef struct
 	GtkCellRenderer * cra_hotkey;
 	GtkCellRendererToggle * crt_hotkey;
 	GtkCheckButton * use_transparent_background_checkbutton;
+    GtkCheckButton * show_notification_checkbutton;
+    GtkComboBox * notification_combobox;
+    GtkListStore * notification_store;
 } PreferencesGui;
 
 //##############################################################################
@@ -105,6 +114,11 @@ typedef struct
 #ifdef COMPILEWITH_NOTIFY
 static NotifyNotification * m_notification = NULL;
 #endif
+static GtkWindow *m_popup_window = NULL;
+static GtkImage *m_popup_icon = NULL;
+static GtkProgressBar *m_pbar = NULL;
+static guint m_timeout_id = -1;
+
 static GtkStatusIcon * m_status_icon = NULL;
 static GtkWidget * m_scale_window = NULL;
 static GtkWidget * m_scale = NULL;
@@ -201,7 +215,7 @@ static gboolean preferences_window_delete_event(GtkWidget * widget,
 
 static void preferences_window_destroy(GObject * object, gpointer user_data)
 {
-	free(gui);
+	g_free(gui);
 	gui = NULL;
 	config_write();
 }
@@ -357,12 +371,12 @@ static void preferences_cra_accel_edited(GtkCellRendererAccel * renderer,
 	gpointer user_data)
 {
 	GtkTreeIter iter;
-	
+
 	if(gtk_tree_model_get_iter_from_string(GTK_TREE_MODEL(gui->hotkey_store), &iter, path))
 	{
 		enum HOTKEY hotkey = 0;
 		gboolean enabled = FALSE;
-		gchar * old_value = NULL; 
+		gchar * old_value = NULL;
 		gchar * new_value = gtk_accelerator_name(accel_key, mask);
 		gtk_tree_model_get(GTK_TREE_MODEL(gui->hotkey_store), &iter, 1, &old_value, 2, &hotkey, 3, &enabled, -1);
 
@@ -396,17 +410,40 @@ static void preferences_use_transparent_background_checkbutton_toggled(GtkCheckB
 	scale_setup();
 }
 
+static void preferences_show_notification_checkbutton_toggled(
+    GtkCheckButton *widget, gpointer user_data)
+{
+    gboolean active = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget));
+    gtk_widget_set_sensitive(GTK_WIDGET(gui->notification_combobox), active);
+    config_set_show_notification(active);
+}
+
+static void preferences_notification_combobox_changed(
+    GtkComboBox *widget, gpointer user_data)
+{
+    GtkTreeIter iter;
+
+    // Get the channel from the combobox
+    if (gtk_combo_box_get_active_iter(gui->notification_combobox, &iter))
+    {
+        gint type;
+        gtk_tree_model_get(GTK_TREE_MODEL(gui->notification_store), &iter, 1,
+                           &type, -1);
+        config_set_notification_type(type);
+    }
+}
+
 // Menu handlers
 static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gpointer user_data)
 {
-
-	if( gui ){
+	if(gui)
+    {
 		gtk_window_present(GTK_WINDOW(gui->window));
 		return;
 	}
 
-	gui = (PreferencesGui*)malloc(sizeof(PreferencesGui));
+	gui = (PreferencesGui *)g_malloc(sizeof *gui);
 
 	gui->builder = gtk_builder_new();
 	gtk_builder_add_from_file(gui->builder, PREFERENCES_UI_FILE, NULL);
@@ -433,6 +470,9 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->cra_hotkey = GTK_CELL_RENDERER(getobj("cra_hotkey"));
 	gui->crt_hotkey = GTK_CELL_RENDERER_TOGGLE(getobj("crt_hotkey"));
 	gui->use_transparent_background_checkbutton = GTK_CHECK_BUTTON(getobj("use_transparent_background"));
+    gui->show_notification_checkbutton = GTK_CHECK_BUTTON(getobj("show_notifications"));
+    gui->notification_combobox = GTK_COMBO_BOX(getobj("notification_combobox"));
+    gui->notification_store = GTK_LIST_STORE(getobj("notification_type_model"));
 	#undef getobj
 
 	// Set the window icon
@@ -470,6 +510,10 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->use_transparent_background_checkbutton),
 		config_get_use_transparent_background());
 
+    gtk_toggle_button_set_active(
+        GTK_TOGGLE_BUTTON(gui->show_notification_checkbutton),
+        config_get_show_notification());
+
 	populate_device_model_and_combobox(gui);
 	populate_channel_model_and_combobox(gui);
 
@@ -500,6 +544,23 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gtk_list_store_append(gui->hotkey_store, &tree_iter);
 	gtk_list_store_set(gui->hotkey_store, &tree_iter, 0, _("Mute"), 1,
 		config_get_hotkey_mute(), 2, (int)MUTE, 3, config_get_hotkey_mute_enabled(), -1);
+
+    // Fill the notification type model.
+    gtk_list_store_append(gui->notification_store, &tree_iter);
+    gtk_list_store_set(gui->notification_store, &tree_iter, 0,
+                       _("GTK+ Popup Window"), 1, (gint)NOTIFICATION_NATIVE,
+                       -1);
+    #ifdef COMPILEWITH_NOTIFY
+    gtk_list_store_append(gui->notification_store, &tree_iter);
+    gtk_list_store_set(gui->notification_store, &tree_iter, 0,
+                       _("libnotify"), 1, (gint)NOTIFICATION_LIBNOTIFY, -1);
+    #endif
+    gint notification_type = config_get_notification_type();
+    gtk_tree_model_iter_nth_child(GTK_TREE_MODEL(gui->notification_store),
+                                  &tree_iter, NULL, notification_type);
+    gtk_combo_box_set_active_iter(gui->notification_combobox, &tree_iter);
+    gtk_widget_set_sensitive(GTK_WIDGET(gui->notification_combobox),
+                             config_get_show_notification());
 
 	// Initialize widgets / connect signals
 	gtk_entry_set_text(gui->mixer_entry, config_get_helper());
@@ -535,12 +596,22 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		preferences_crt_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->use_transparent_background_checkbutton), "toggled", G_CALLBACK(
 		preferences_use_transparent_background_checkbutton_toggled), NULL);
+    g_signal_connect(
+        G_OBJECT(gui->show_notification_checkbutton), "toggled",
+        G_CALLBACK(preferences_show_notification_checkbutton_toggled), NULL);
+    g_signal_connect(
+        G_OBJECT(gui->notification_combobox), "changed",
+        G_CALLBACK(preferences_notification_combobox_changed), NULL);
 
 	gtk_widget_show_all(gui->window);
 }
 
 static void menu_quit_on_activate(GtkMenuItem * menuitem, gpointer user_data)
 {
+    // Destroy the preferences window on shutdown to make sure the current
+    // settings are saved as well.
+    if (gui)
+        gtk_widget_destroy(gui->window);
 	gtk_main_quit();
 }
 
@@ -745,68 +816,56 @@ static int status_icon_get_number(int volume, gboolean mute)
 // from file, for example after a theme change.
 static void status_icon_update(gboolean mute, gboolean ignore_cache)
 {
-	static int volume_cache = -1;
-	static int icon_cache = -1;
-	int volume = backend_get_volume();
+    static int volume_cache = -1;
+    static int icon_cache = -1;
+    int volume = backend_get_volume();
 
-	int icon_number = status_icon_get_number(volume, mute);
-	if(icon_number != icon_cache || ignore_cache)
-	{
-		if(config_get_use_gtk_theme())
-		{
-			if(icon_number == 1)
-				gtk_status_icon_set_from_icon_name(m_status_icon,
-					"audio-volume-muted");
-			else if(icon_number <= 3)
-				gtk_status_icon_set_from_icon_name(m_status_icon,
-					"audio-volume-low");
-			else if(icon_number <= 6)
-				gtk_status_icon_set_from_icon_name(m_status_icon,
-					"audio-volume-medium");
-			else
-				gtk_status_icon_set_from_icon_name(m_status_icon,
-					"audio-volume-high");
-		}
-		else
-		{
-			gtk_status_icon_set_from_pixbuf(m_status_icon, m_icons[icon_number-1]);
-		}
+    int icon_number = status_icon_get_number(volume, mute);
+    if(icon_number != icon_cache || ignore_cache)
+    {
+        const gchar *icon_name;
+        if(icon_number == 1)
+            icon_name = "audio-volume-muted-panel";
+        else if(icon_number <= 3)
+            icon_name = "audio-volume-low-panel";
+        else if(icon_number <= 6)
+            icon_name = "audio-volume-medium-panel";
+        else
+            icon_name = "audio-volume-high-panel";
 
-		#ifdef COMPILEWITH_NOTIFY
-		if (m_notification != NULL)
-		{
-			if(icon_number == 1)
-			  notify_notification_update(m_notification, APPNAME, NULL,
-			    "audio-volume-muted");
-			else if(icon_number <= 3)
-			  notify_notification_update(m_notification, APPNAME, NULL,
-			    "audio-volume-low");
-			else if(icon_number <= 6)
-			  notify_notification_update(m_notification, APPNAME, NULL,
-			    "audio-volume-medium");
-			else
-			  notify_notification_update(m_notification, APPNAME, NULL,
-			    "audio-volume-high");
-		}
-		#endif
+        if(config_get_use_gtk_theme())
+        {
+            gtk_status_icon_set_from_icon_name(m_status_icon, icon_name);
+        }
+        else
+        {
+            gtk_status_icon_set_from_pixbuf(m_status_icon,
+                                            m_icons[icon_number-1]);
+        }
 
-		icon_cache = icon_number;
-	}
+        #ifdef COMPILEWITH_NOTIFY
+        notify_notification_update(m_notification, APPNAME, NULL, icon_name);
+        #endif
+        gtk_image_set_from_icon_name(m_popup_icon, icon_name,
+                                     GTK_ICON_SIZE_LARGE_TOOLBAR);
 
-	if((volume != volume_cache || ignore_cache) && backend_get_channel())
-	{
-		gchar buffer[32];
-		g_sprintf(buffer, "%s: %d%%", backend_get_channel(), volume);
-		gtk_status_icon_set_tooltip_text(m_status_icon, buffer);
+        icon_cache = icon_number;
+    }
 
-		#ifdef COMPILEWITH_NOTIFY
-		if (m_notification != NULL)
-			notify_notification_set_hint_int32(m_notification, "value",
-				(gint)volume);
-		#endif
+    if((volume != volume_cache || ignore_cache) && backend_get_channel())
+    {
+        gchar buffer[32];
+        g_sprintf(buffer, "%s: %d%%", backend_get_channel(), volume);
+        gtk_status_icon_set_tooltip_text(m_status_icon, buffer);
 
-		volume_cache = volume;
-	}
+        #ifdef COMPILEWITH_NOTIFY
+        notify_notification_set_hint_int32(m_notification, "value",
+                (gint)volume);
+        #endif
+        gtk_progress_bar_set_fraction(m_pbar, volume / 100.0);
+
+        volume_cache = volume;
+    }
 }
 
 static void status_icon_setup(gboolean mute)
@@ -874,12 +933,37 @@ static void scale_value_changed(GtkRange * range, gpointer user_data)
 	scale_update();
 }
 
+static gboolean hide_popup(gpointer user_data)
+{
+    gtk_widget_hide(GTK_WIDGET(m_popup_window));
+    return FALSE;
+}
+
 static void notification_show()
 {
-	#ifdef COMPILEWITH_NOTIFY
-	if (m_notification != NULL)
-		notify_notification_show(m_notification, NULL);
-	#endif
+    if (config_get_show_notification())
+    {
+        gint type = config_get_notification_type();
+        if (type == NOTIFICATION_NATIVE)
+        {
+            gtk_widget_show_all(GTK_WIDGET(m_popup_window));
+            g_source_remove(m_timeout_id);
+            m_timeout_id = g_timeout_add(1500, (GSourceFunc)hide_popup, NULL);
+        }
+        #ifdef COMPILEWITH_NOTIFY
+        else
+        {
+            g_source_remove(m_timeout_id);
+            hide_popup(NULL);
+            notify_notification_show(m_notification, NULL);
+        }
+        #endif
+    }
+    else
+    {
+        g_source_remove(m_timeout_id);
+        hide_popup(NULL);
+    }
 }
 
 static void render_widget (cairo_t *cairo_context, gint width, gint height)
@@ -1035,19 +1119,11 @@ int main(int argc, char * argv[])
 	GError **errors = 0;
 	gchar * config_name = 0;
 	gchar * device_name = 0;
-	gboolean notify_off = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
 			_("Alternate name to use for config file, default is volumeicon"), "name" },
-		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name, 
+		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name,
 			_("Mixer device name"), "name" },
-		{ "notify-off", 'n', 0, G_OPTION_ARG_NONE, &notify_off,
-		#ifdef COMPILEWITH_NOTIFY
-			_("Do not show notifications on volume change"),
-		#else
-			_("Ignored, as this is compiled without notification capability"),
-		#endif
-		  NULL },
 		{ NULL }
 	};
 	gtk_init_with_args(&argc, &argv, "", options, "", errors);
@@ -1055,27 +1131,49 @@ int main(int argc, char * argv[])
 
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
-	if (!notify_off)
-	{
-		if (notify_init(APPNAME))
-		{
-			#if NOTIFY_CHECK_VERSION(0,7,0)
-			m_notification = notify_notification_new(APPNAME, NULL, NULL);
-			#else
-			m_notification = notify_notification_new(APPNAME, NULL, NULL, NULL);
-			#endif
-		}
+    if (notify_init(APPNAME))
+    {
+        #if NOTIFY_CHECK_VERSION(0,7,0)
+        m_notification = notify_notification_new(APPNAME, NULL, NULL);
+        #else
+        m_notification = notify_notification_new(APPNAME, NULL, NULL, NULL);
+        #endif
+    }
 
-		if (m_notification != NULL) {
-			notify_notification_set_timeout(m_notification, NOTIFY_EXPIRES_DEFAULT);
-			notify_notification_set_hint_string(m_notification, "synchronous", "volume");
-		}
-		else
-		{
-			g_fprintf(stderr, "Failed to initialize notifications\n");
-		}
-	}
+    if (m_notification != NULL) {
+        notify_notification_set_timeout(m_notification, NOTIFY_EXPIRES_DEFAULT);
+        notify_notification_set_hint_string(m_notification, "synchronous", "volume");
+    }
+    else
+    {
+        g_fprintf(stderr, "Failed to initialize notifications\n");
+    }
 	#endif
+
+    /* Set up the popup window. */
+    m_popup_window = (GtkWindow *)gtk_window_new(GTK_WINDOW_POPUP);
+    gtk_container_set_border_width(GTK_CONTAINER(m_popup_window), 10);
+    gtk_window_set_default_size(m_popup_window, 180, -1);
+    gtk_window_set_position(m_popup_window, GTK_WIN_POS_CENTER);
+
+    m_popup_icon = (GtkImage *)gtk_image_new();
+
+    /* Initialize the progress bar. */
+    m_pbar = (GtkProgressBar *)gtk_progress_bar_new();
+    gtk_progress_bar_set_fraction(m_pbar, 0.0);
+    gtk_orientable_set_orientation(GTK_ORIENTABLE(m_pbar),
+                                   GTK_ORIENTATION_HORIZONTAL);
+    gtk_progress_bar_set_show_text(m_pbar, TRUE);
+    gtk_widget_show(GTK_WIDGET(m_pbar));
+
+    /* Add icon image and progress bar to hbox. */
+    GtkBox *hbox = (GtkBox *)gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 3);
+    gtk_box_pack_start(
+        GTK_BOX(hbox), GTK_WIDGET(m_popup_icon), FALSE, FALSE, 0);
+    gtk_box_pack_start(
+        GTK_BOX(hbox), GTK_WIDGET(m_pbar), TRUE, TRUE, 0);
+
+    gtk_container_add(GTK_CONTAINER(m_popup_window), GTK_WIDGET(hbox));
 
 	// Setup backend
 	#ifdef COMPILEWITH_OSS
@@ -1108,6 +1206,9 @@ int main(int argc, char * argv[])
 	volume_icon_load_icons();
 	status_icon_setup(m_mute);
 	scale_setup();
+    gint notification_type = config_get_notification_type();
+    if (notification_type < 0 || notification_type >= N_NOTIFICATIONS)
+        config_set_notification_type((gint)NOTIFICATION_NATIVE);
 
 	keybinder_init();
 	if(config_get_hotkey_up_enabled() &&
@@ -1123,11 +1224,12 @@ int main(int argc, char * argv[])
 	// Main Loop
 	gtk_main();
 
-	#ifdef COMPILEWITH_NOTIFY
-	if (m_notification != NULL)
-		g_object_unref(G_OBJECT(m_notification));
-	notify_uninit();
-	#endif
-	
+    #ifdef COMPILEWITH_NOTIFY
+    g_object_unref(G_OBJECT(m_notification));
+    notify_uninit();
+    #endif
+    gtk_widget_destroy(GTK_WIDGET(m_popup_window));
+
 	return EXIT_SUCCESS;
 }
+
