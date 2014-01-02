@@ -1116,7 +1116,7 @@ int main(int argc, char * argv[])
     textdomain(GETTEXT_PACKAGE);
 
 	// Initialize gtk with arguments
-	GError **errors = 0;
+	GError * error = 0;
 	gchar * config_name = 0;
 	gchar * device_name = 0;
 	GOptionEntry options[] = {
@@ -1126,7 +1126,12 @@ int main(int argc, char * argv[])
 			_("Mixer device name"), "name" },
 		{ NULL }
 	};
-	gtk_init_with_args(&argc, &argv, "", options, "", errors);
+	if(!gtk_init_with_args(&argc, &argv, "", options, "", &error)) {
+		if(error) {
+			g_printerr("%s\n", error->message);
+		}
+		return EXIT_FAILURE;
+	}
 	signal(SIGCHLD, SIG_IGN);
 
 	// Setup OSD Notification
