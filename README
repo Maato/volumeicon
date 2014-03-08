@@ -22,3 +22,7 @@
 [Dependencies]
   To run ./autogen.sh, intltool must be installed.
 
+  To compile, the following packages must be installed (Debian names given):
+
+  libasound2-dev libglib2.0-dev libgtk-3-dev
+
