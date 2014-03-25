@@ -689,7 +689,7 @@ static gboolean scale_timeout(gpointer data)
 }
 
 // StatusIcon handlers
-static void status_icon_on_button_release(GtkStatusIcon * status_icon,
+static void status_icon_on_button_press(GtkStatusIcon * status_icon,
 	GdkEventButton * event, gpointer user_data)
 {
 	if(event->button == 1 && config_get_left_mouse_slider() &&
@@ -871,8 +871,8 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
 static void status_icon_setup(gboolean mute)
 {
 	m_status_icon = gtk_status_icon_new();
-	g_signal_connect(G_OBJECT(m_status_icon), "button_release_event",
-		G_CALLBACK(status_icon_on_button_release), NULL);
+	g_signal_connect(G_OBJECT(m_status_icon), "button_press_event",
+		G_CALLBACK(status_icon_on_button_press), NULL);
 	g_signal_connect(G_OBJECT(m_status_icon), "scroll_event",
 		G_CALLBACK(status_icon_on_scroll_event), NULL);
 	g_signal_connect(G_OBJECT(m_status_icon), "popup-menu",
