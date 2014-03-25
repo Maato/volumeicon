@@ -689,7 +689,7 @@ static gboolean scale_timeout(gpointer data)
 }
 
 // StatusIcon handlers
-static void status_icon_on_button_press(GtkStatusIcon * status_icon,
+static gboolean status_icon_on_button_press(GtkStatusIcon * status_icon,
 	GdkEventButton * event, gpointer user_data)
 {
 	if(event->button == 1 && config_get_left_mouse_slider() &&
@@ -737,6 +737,7 @@ static void status_icon_on_button_press(GtkStatusIcon * status_icon,
 	{
 		volume_icon_launch_helper();
 	}
+	return FALSE;
 }
 
 static void status_icon_on_scroll_event(GtkStatusIcon * status_icon,
