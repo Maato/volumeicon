@@ -689,12 +689,17 @@ static gboolean scale_timeout(gpointer data)
 }
 
 // StatusIcon handlers
-static void status_icon_on_button_release(GtkStatusIcon * status_icon,
+static gboolean status_icon_on_button_press(GtkStatusIcon * status_icon,
 	GdkEventButton * event, gpointer user_data)
 {
-	if(event->button == 1 && config_get_left_mouse_slider() &&
-		!gtk_widget_get_visible(m_scale_window))
+	if(event->button == 1 && config_get_left_mouse_slider())
 	{
+		if(gtk_widget_get_visible(m_scale_window))
+		{
+			gtk_widget_hide(m_scale_window);
+			return TRUE;
+		}
+
 		gint sizex;
 		gint sizey;
 		gtk_window_get_size(GTK_WINDOW(m_scale_window), &sizex, &sizey);
@@ -706,13 +711,16 @@ static void status_icon_on_button_release(GtkStatusIcon * status_icon,
 		{
 			GdkRectangle area;
 			gtk_status_icon_get_geometry(m_status_icon, NULL, &area, NULL);
-			if(config_get_use_horizontal_slider()) {
+			if(config_get_use_horizontal_slider())
+			{
 				y = area.y + area.height / 2 - sizey / 2;
 				if(area.x > sizex) // popup left
 					x = area.x - sizex;
 				else // popup right
 					x = area.x + area.width;
-			} else {
+			}
+			else
+			{
 				x = area.x + area.width / 2 - sizex / 2;
 				if(area.y > sizey) // popup up
 					y = area.y - sizey;
@@ -725,7 +733,7 @@ static void status_icon_on_button_release(GtkStatusIcon * status_icon,
 		gtk_window_present_with_time(GTK_WINDOW(m_scale_window), event->time);
 		g_timeout_add(TIMER_INTERVAL, scale_timeout, NULL);
 	}
-	else if(event->button == 1 ||
+	else if((event->button == 1 && !config_get_left_mouse_slider()) ||
 		(event->button == 2 && config_get_middle_mouse_mute()))
 	{
 		m_mute = !m_mute;
@@ -737,6 +745,12 @@ static void status_icon_on_button_release(GtkStatusIcon * status_icon,
 	{
 		volume_icon_launch_helper();
 	}
+	else
+	{
+		return FALSE;
+	}
+
+	return TRUE;
 }
 
 static void status_icon_on_scroll_event(GtkStatusIcon * status_icon,
@@ -871,8 +885,8 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
 static void status_icon_setup(gboolean mute)
 {
 	m_status_icon = gtk_status_icon_new();
-	g_signal_connect(G_OBJECT(m_status_icon), "button_release_event",
-		G_CALLBACK(status_icon_on_button_release), NULL);
+	g_signal_connect(G_OBJECT(m_status_icon), "button_press_event",
+		G_CALLBACK(status_icon_on_button_press), NULL);
 	g_signal_connect(G_OBJECT(m_status_icon), "scroll_event",
 		G_CALLBACK(status_icon_on_scroll_event), NULL);
 	g_signal_connect(G_OBJECT(m_status_icon), "popup-menu",
