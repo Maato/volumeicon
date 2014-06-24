@@ -145,6 +145,7 @@ static gboolean m_mute = FALSE;
 // Icons
 #define ICON_COUNT 8
 static GdkPixbuf * m_icons[ICON_COUNT];
+static gchar *ico_suffix = NULL;
 
 //##############################################################################
 // Function prototypes
@@ -839,13 +840,13 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     {
         const gchar *icon_name;
         if(icon_number == 1)
-            icon_name = "audio-volume-muted-panel";
+            icon_name = g_strconcat("audio-volume-muted",ico_suffix,NULL);
         else if(icon_number <= 3)
-            icon_name = "audio-volume-low-panel";
+            icon_name = g_strconcat("audio-volume-low",ico_suffix,NULL);
         else if(icon_number <= 6)
-            icon_name = "audio-volume-medium-panel";
+            icon_name = g_strconcat("audio-volume-medium",ico_suffix,NULL);
         else
-            icon_name = "audio-volume-high-panel";
+            icon_name = g_strconcat("audio-volume-high",ico_suffix,NULL);
 
         if(config_get_use_gtk_theme())
         {
@@ -1148,6 +1149,13 @@ int main(int argc, char * argv[])
 	}
 	signal(SIGCHLD, SIG_IGN);
 
+	// Use '-panel' icons, but only if available
+	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+	if(gtk_icon_theme_has_icon(icon_theme, "audio-volume-muted-panel"))
+	{
+		ico_suffix = "-panel";
+	}
+
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
     if (notify_init(APPNAME))
@@ -1251,4 +1259,3 @@ int main(int argc, char * argv[])
 
 	return EXIT_SUCCESS;
 }
-
