@@ -865,6 +865,7 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
                                      GTK_ICON_SIZE_LARGE_TOOLBAR);
 
         icon_cache = icon_number;
+        g_free(icon_name);
     }
 
     if((volume != volume_cache || ignore_cache) && backend_get_channel())
