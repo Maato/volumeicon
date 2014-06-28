@@ -94,6 +94,8 @@ typedef struct
 	GtkListStore * theme_store;
 	GtkListStore * hotkey_store;
 	GtkButton * close_button;
+	GtkRadioButton * linear_radiobutton;
+	GtkRadioButton * decibel_radiobutton;
 	GtkRadioButton * mute_radiobutton;
 	GtkRadioButton * slider_radiobutton;
 	GtkRadioButton * mmb_mute_radiobutton;
@@ -225,6 +227,18 @@ static void preferences_close_button_clicked(GtkWidget * widget,
 	gpointer user_data)
 {
 	gtk_widget_destroy(gui->window);
+}
+
+static void preferences_decibel_radiobutton_toggled(GtkToggleButton * togglebutton,
+	gpointer user_data)
+{
+	gboolean decibel_scale = gtk_toggle_button_get_active(togglebutton);
+	config_set_decibel_scale(decibel_scale);
+
+	m_volume = clamp_volume(backend_get_volume());
+	m_mute = backend_get_mute();
+	status_icon_update(m_mute, TRUE);
+	scale_update();
 }
 
 static void preferences_mute_radiobutton_toggled(GtkToggleButton * togglebutton,
@@ -462,6 +476,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->theme_store = GTK_LIST_STORE(getobj("theme_name_model"));
 	gui->hotkey_store = GTK_LIST_STORE(getobj("hotkey_binding_model"));
 	gui->close_button = GTK_BUTTON(getobj("close_button"));
+	gui->linear_radiobutton = GTK_RADIO_BUTTON(getobj("linear_radiobutton"));
+	gui->decibel_radiobutton = GTK_RADIO_BUTTON(getobj("decibel_radiobutton"));
 	gui->mute_radiobutton = GTK_RADIO_BUTTON(getobj("mute_radiobutton"));
 	gui->slider_radiobutton = GTK_RADIO_BUTTON(getobj("slider_radiobutton"));
 	gui->mmb_mute_radiobutton = GTK_RADIO_BUTTON(getobj("mmb_mute_radiobutton"));
@@ -480,6 +496,17 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gtk_window_set_default_icon_from_file(APP_ICON, NULL);
 
 	// Set the radiobuttons
+	if(config_get_decibel_scale())
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->decibel_radiobutton),
+			TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->linear_radiobutton),
+			TRUE);
+	}
+
 	if(config_get_left_mouse_slider())
 	{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->slider_radiobutton),
@@ -583,6 +610,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		G_CALLBACK(preferences_volume_adjustment_changed), NULL);
 	g_signal_connect(G_OBJECT(gui->mixer_entry), "changed", G_CALLBACK(
 		preferences_mixer_entry_changed), NULL);
+	g_signal_connect(G_OBJECT(gui->decibel_radiobutton), "toggled", G_CALLBACK(
+		preferences_decibel_radiobutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->mute_radiobutton), "toggled", G_CALLBACK(
 		preferences_mute_radiobutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->mmb_mixer_radiobutton), "toggled", G_CALLBACK(
