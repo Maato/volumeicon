@@ -119,7 +119,7 @@ static NotifyNotification * m_notification = NULL;
 static GtkWindow *m_popup_window = NULL;
 static GtkImage *m_popup_icon = NULL;
 static GtkProgressBar *m_pbar = NULL;
-static guint m_timeout_id = -1;
+static guint m_timeout_id = 0;
 
 static GtkStatusIcon * m_status_icon = NULL;
 static GtkWidget * m_scale_window = NULL;
@@ -796,6 +796,8 @@ static void status_icon_on_scroll_event(GtkStatusIcon * status_icon,
 		case(GDK_SCROLL_LEFT):
 			m_volume = clamp_volume(m_volume - config_get_stepsize());
 			break;
+		default:
+			break;
 	}
 	backend_set_volume(m_volume);
 	if(m_mute)
@@ -867,7 +869,7 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     int icon_number = status_icon_get_number(volume, mute);
     if(icon_number != icon_cache || ignore_cache)
     {
-        const gchar *icon_name;
+        gchar *icon_name;
         if(icon_number == 1)
             icon_name = g_strconcat("audio-volume-muted",ico_suffix,NULL);
         else if(icon_number <= 3)
@@ -981,6 +983,7 @@ static void scale_value_changed(GtkRange * range, gpointer user_data)
 static gboolean hide_popup(gpointer user_data)
 {
     gtk_widget_hide(GTK_WIDGET(m_popup_window));
+    m_timeout_id = 0;
     return FALSE;
 }
 
@@ -992,13 +995,15 @@ static void notification_show()
         if (type == NOTIFICATION_NATIVE)
         {
             gtk_widget_show_all(GTK_WIDGET(m_popup_window));
-            g_source_remove(m_timeout_id);
+            if (m_timeout_id)
+                g_source_remove(m_timeout_id);
             m_timeout_id = g_timeout_add(1500, (GSourceFunc)hide_popup, NULL);
         }
         #ifdef COMPILEWITH_NOTIFY
         else
         {
-            g_source_remove(m_timeout_id);
+            if (m_timeout_id)
+                g_source_remove(m_timeout_id);
             hide_popup(NULL);
             notify_notification_show(m_notification, NULL);
         }
@@ -1006,7 +1011,8 @@ static void notification_show()
     }
     else
     {
-        g_source_remove(m_timeout_id);
+        if (m_timeout_id)
+            g_source_remove(m_timeout_id);
         hide_popup(NULL);
     }
 }

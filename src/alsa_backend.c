@@ -23,11 +23,12 @@
 
 #include <alsa/asoundlib.h>
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <math.h>
 
 #include "alsa_backend.h"
 #include "alsa_volume_mapping.h"
+#include "config.h"
 
 //##############################################################################
 // Static variables
