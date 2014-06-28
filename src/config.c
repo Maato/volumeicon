@@ -41,6 +41,7 @@ static gchar * m_theme = NULL;
 static gboolean m_use_panel_specific_icons = FALSE;
 static gchar * m_card = NULL;
 static gchar * m_channel = NULL;
+static gboolean m_decibel_scale = FALSE;
 static gchar * m_hotkey_up = NULL;
 static gchar * m_hotkey_down = NULL;
 static gchar * m_hotkey_mute = NULL;
@@ -93,6 +94,7 @@ static void config_read()
 	m_helper_program = g_key_file_get_value(kf, "StatusIcon", "onclick", NULL);
 	m_card = g_key_file_get_value(kf, "Alsa", "card", NULL);
 	m_channel = g_key_file_get_value(kf, "Alsa", "channel", NULL);
+	m_decibel_scale = g_key_file_get_boolean(kf, "Alsa", "decibel_scale", NULL);
 	m_stepsize = g_key_file_get_integer(kf, "StatusIcon", "stepsize", NULL);
 	m_theme = g_key_file_get_value(kf, "StatusIcon", "theme", NULL);
 	m_use_panel_specific_icons = g_key_file_get_boolean(kf, "StatusIcon", "use_panel_specific_icons", NULL);
@@ -145,6 +147,11 @@ void config_set_channel(const gchar * channel)
 {
 	g_free(m_channel);
 	m_channel = g_strdup(channel);
+}
+
+void config_set_decibel_scale(gboolean decibel_scale)
+{
+	m_decibel_scale = decibel_scale;
 }
 
 void config_set_stepsize(int stepsize)
@@ -238,6 +245,11 @@ const gchar * config_get_card()
 const gchar * config_get_channel()
 {
 	return m_channel;
+}
+
+gboolean config_get_decibel_scale()
+{
+	return m_decibel_scale;
 }
 
 int config_get_stepsize()
@@ -335,6 +347,7 @@ void config_write()
 	g_key_file_set_boolean(kf, "Hotkeys", "down_enabled", m_hotkey_down_enabled);
 	g_key_file_set_boolean(kf, "Hotkeys", "mute_enabled", m_hotkey_mute_enabled);
 	g_key_file_set_boolean(kf, "StatusIcon", "use_transparent_background", m_use_transparent_background);
+	g_key_file_set_boolean(kf, "Alsa", "decibel_scale", m_decibel_scale);
 	if(m_helper_program)
 		g_key_file_set_value(kf, "StatusIcon", "onclick", m_helper_program);
 	if(m_theme)
