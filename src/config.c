@@ -94,7 +94,7 @@ static void config_read()
 	m_helper_program = g_key_file_get_value(kf, "StatusIcon", "onclick", NULL);
 	m_card = g_key_file_get_value(kf, "Alsa", "card", NULL);
 	m_channel = g_key_file_get_value(kf, "Alsa", "channel", NULL);
-	m_decibel_scale = g_key_file_get_boolean(kf, "alsa", "decibel_scale", NULL);
+	m_decibel_scale = g_key_file_get_boolean(kf, "Alsa", "decibel_scale", NULL);
 	m_stepsize = g_key_file_get_integer(kf, "StatusIcon", "stepsize", NULL);
 	m_theme = g_key_file_get_value(kf, "StatusIcon", "theme", NULL);
 	m_lmb_slider = g_key_file_get_boolean(kf, "StatusIcon", "lmb_slider", NULL);
