@@ -212,6 +212,29 @@
                                         <property name="position">1</property>
                                       </packing>
                                     </child>
+                                    <child>
+                                      <object class="GtkRadioButton" id="linear_radiobutton">
+                                        <property name="label" translatable="yes">Linear Scale</property>
+                                        <property name="visible">True</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">2</property>
+                                      </packing>
+                                    </child>
+                                    <child>
+                                      <object class="GtkRadioButton" id="decibel_radiobutton">
+                                        <property name="label" translatable="yes">Decibel Scale</property>
+                                        <property name="visible">True</property>
+                                        <property name="group">linear_radiobutton</property>
+                                      </object>
+                                      <packing>
+                                        <property name="expand">True</property>
+                                        <property name="fill">True</property>
+                                        <property name="position">3</property>
+                                      </packing>
+                                    </child>
                                   </object>
                                 </child>
                               </object>
