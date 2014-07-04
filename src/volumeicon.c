@@ -94,6 +94,8 @@ typedef struct
 	GtkListStore * theme_store;
 	GtkListStore * hotkey_store;
 	GtkButton * close_button;
+	GtkRadioButton * linear_radiobutton;
+	GtkRadioButton * decibel_radiobutton;
 	GtkRadioButton * mute_radiobutton;
 	GtkRadioButton * slider_radiobutton;
 	GtkRadioButton * mmb_mute_radiobutton;
@@ -117,7 +119,7 @@ static NotifyNotification * m_notification = NULL;
 static GtkWindow *m_popup_window = NULL;
 static GtkImage *m_popup_icon = NULL;
 static GtkProgressBar *m_pbar = NULL;
-static guint m_timeout_id = -1;
+static guint m_timeout_id = 0;
 
 static GtkStatusIcon * m_status_icon = NULL;
 static GtkWidget * m_scale_window = NULL;
@@ -145,6 +147,7 @@ static gboolean m_mute = FALSE;
 // Icons
 #define ICON_COUNT 8
 static GdkPixbuf * m_icons[ICON_COUNT];
+static gchar *ico_suffix = NULL;
 
 //##############################################################################
 // Function prototypes
@@ -224,6 +227,18 @@ static void preferences_close_button_clicked(GtkWidget * widget,
 	gpointer user_data)
 {
 	gtk_widget_destroy(gui->window);
+}
+
+static void preferences_decibel_radiobutton_toggled(GtkToggleButton * togglebutton,
+	gpointer user_data)
+{
+	gboolean decibel_scale = gtk_toggle_button_get_active(togglebutton);
+	config_set_decibel_scale(decibel_scale);
+
+	m_volume = clamp_volume(backend_get_volume());
+	m_mute = backend_get_mute();
+	status_icon_update(m_mute, TRUE);
+	scale_update();
 }
 
 static void preferences_mute_radiobutton_toggled(GtkToggleButton * togglebutton,
@@ -461,6 +476,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->theme_store = GTK_LIST_STORE(getobj("theme_name_model"));
 	gui->hotkey_store = GTK_LIST_STORE(getobj("hotkey_binding_model"));
 	gui->close_button = GTK_BUTTON(getobj("close_button"));
+	gui->linear_radiobutton = GTK_RADIO_BUTTON(getobj("linear_radiobutton"));
+	gui->decibel_radiobutton = GTK_RADIO_BUTTON(getobj("decibel_radiobutton"));
 	gui->mute_radiobutton = GTK_RADIO_BUTTON(getobj("mute_radiobutton"));
 	gui->slider_radiobutton = GTK_RADIO_BUTTON(getobj("slider_radiobutton"));
 	gui->mmb_mute_radiobutton = GTK_RADIO_BUTTON(getobj("mmb_mute_radiobutton"));
@@ -479,6 +496,17 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gtk_window_set_default_icon_from_file(APP_ICON, NULL);
 
 	// Set the radiobuttons
+	if(config_get_decibel_scale())
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->decibel_radiobutton),
+			TRUE);
+	}
+	else
+	{
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->linear_radiobutton),
+			TRUE);
+	}
+
 	if(config_get_left_mouse_slider())
 	{
 		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(gui->slider_radiobutton),
@@ -582,6 +610,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		G_CALLBACK(preferences_volume_adjustment_changed), NULL);
 	g_signal_connect(G_OBJECT(gui->mixer_entry), "changed", G_CALLBACK(
 		preferences_mixer_entry_changed), NULL);
+	g_signal_connect(G_OBJECT(gui->decibel_radiobutton), "toggled", G_CALLBACK(
+		preferences_decibel_radiobutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->mute_radiobutton), "toggled", G_CALLBACK(
 		preferences_mute_radiobutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->mmb_mixer_radiobutton), "toggled", G_CALLBACK(
@@ -766,6 +796,8 @@ static void status_icon_on_scroll_event(GtkStatusIcon * status_icon,
 		case(GDK_SCROLL_LEFT):
 			m_volume = clamp_volume(m_volume - config_get_stepsize());
 			break;
+		default:
+			break;
 	}
 	backend_set_volume(m_volume);
 	if(m_mute)
@@ -837,15 +869,15 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     int icon_number = status_icon_get_number(volume, mute);
     if(icon_number != icon_cache || ignore_cache)
     {
-        const gchar *icon_name;
+        gchar *icon_name;
         if(icon_number == 1)
-            icon_name = "audio-volume-muted-panel";
+            icon_name = g_strconcat("audio-volume-muted",ico_suffix,NULL);
         else if(icon_number <= 3)
-            icon_name = "audio-volume-low-panel";
+            icon_name = g_strconcat("audio-volume-low",ico_suffix,NULL);
         else if(icon_number <= 6)
-            icon_name = "audio-volume-medium-panel";
+            icon_name = g_strconcat("audio-volume-medium",ico_suffix,NULL);
         else
-            icon_name = "audio-volume-high-panel";
+            icon_name = g_strconcat("audio-volume-high",ico_suffix,NULL);
 
         if(config_get_use_gtk_theme())
         {
@@ -864,6 +896,7 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
                                      GTK_ICON_SIZE_LARGE_TOOLBAR);
 
         icon_cache = icon_number;
+        g_free(icon_name);
     }
 
     if((volume != volume_cache || ignore_cache) && backend_get_channel())
@@ -950,6 +983,7 @@ static void scale_value_changed(GtkRange * range, gpointer user_data)
 static gboolean hide_popup(gpointer user_data)
 {
     gtk_widget_hide(GTK_WIDGET(m_popup_window));
+    m_timeout_id = 0;
     return FALSE;
 }
 
@@ -961,13 +995,15 @@ static void notification_show()
         if (type == NOTIFICATION_NATIVE)
         {
             gtk_widget_show_all(GTK_WIDGET(m_popup_window));
-            g_source_remove(m_timeout_id);
+            if (m_timeout_id)
+                g_source_remove(m_timeout_id);
             m_timeout_id = g_timeout_add(1500, (GSourceFunc)hide_popup, NULL);
         }
         #ifdef COMPILEWITH_NOTIFY
         else
         {
-            g_source_remove(m_timeout_id);
+            if (m_timeout_id)
+                g_source_remove(m_timeout_id);
             hide_popup(NULL);
             notify_notification_show(m_notification, NULL);
         }
@@ -975,7 +1011,8 @@ static void notification_show()
     }
     else
     {
-        g_source_remove(m_timeout_id);
+        if (m_timeout_id)
+            g_source_remove(m_timeout_id);
         hide_popup(NULL);
     }
 }
@@ -1148,6 +1185,13 @@ int main(int argc, char * argv[])
 	}
 	signal(SIGCHLD, SIG_IGN);
 
+	// Use '-panel' icons, but only if available
+	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+	if(gtk_icon_theme_has_icon(icon_theme, "audio-volume-muted-panel"))
+	{
+		ico_suffix = "-panel";
+	}
+
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
     if (notify_init(APPNAME))
@@ -1251,4 +1295,3 @@ int main(int argc, char * argv[])
 
 	return EXIT_SUCCESS;
 }
-

@@ -2,7 +2,7 @@
 // volumeicon
 //
 // alsa_backend.c - implements a volume control abstraction using alsa-lib
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -23,11 +23,12 @@
 
 #include <alsa/asoundlib.h>
 
-#include <glib.h>
+#include <gtk/gtk.h>
 #include <math.h>
 
 #include "alsa_backend.h"
 #include "alsa_volume_mapping.h"
+#include "config.h"
 
 //##############################################################################
 // Static variables
@@ -70,6 +71,7 @@ static gboolean asound_poll_cb(GIOChannel * source, GIOCondition condition,
 	int retval = snd_mixer_handle_events(m_mixer);
 	if(retval < 0) {
 		fprintf(stderr, "snd_mixer_handle_events: %s\n", snd_strerror(retval));
+		gtk_main_quit();
 		return FALSE;
 	}
 	return TRUE;
@@ -105,7 +107,15 @@ int asound_get_volume()
 	}
 
 	// Return the current volume value from [0-100]
-	return rint(100 * get_normalized_playback_volume(m_elem, 0));
+	if(config_get_decibel_scale())
+	{
+		long pmin, pmax, value;
+		snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
+		snd_mixer_selem_get_playback_volume(m_elem, 0, &value);
+		return 100 * (value - pmin) / (pmax - pmin);
+	}
+	else
+		return rint(100 * get_normalized_playback_volume(m_elem, 0));
 }
 
 gboolean asound_get_mute()
@@ -178,12 +188,12 @@ void asound_setup(const gchar * card, const gchar * channel,
 			card_override = g_strdup_printf("hw:%d", card_number);
 		}
 		ret = snd_card_next(&card_number);
-	} 
+	}
 
 	// Load the mixer for the provided cardname
 	snd_mixer_open(&m_mixer, 0);
 	if(snd_mixer_attach(m_mixer, (card_override != NULL ? card_override : m_device)) < 0) {
-		fprintf(stderr, "Failed to open sound device with name: %s\n", 
+		fprintf(stderr, "Failed to open sound device with name: %s\n",
 			(card_override != NULL ? card_override : m_device));
 		snd_mixer_close(m_mixer);
 		m_mixer = NULL;
@@ -206,7 +216,7 @@ void asound_setup(const gchar * card, const gchar * channel,
 		{
 			GIOChannel * giochannel = g_io_channel_unix_new(pfd.fd);
 			g_io_add_watch_full(giochannel, G_PRIORITY_DEFAULT,
-				G_IO_IN, asound_poll_cb, NULL, NULL);
+				G_IO_IN | G_IO_ERR , asound_poll_cb, NULL, NULL);
 		}
 	}
 
@@ -284,5 +294,13 @@ void asound_set_volume(int volume)
 	}
 	volume = (volume < 0 ? 0 : (volume > 100 ? 100 : volume));
 
-	set_normalized_playback_volume_all(m_elem, volume / 100.0, 0);
+	if(config_get_decibel_scale())
+	{
+		long pmin, pmax;
+		snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
+		long value = pmin + (pmax-pmin) * volume / 100;
+		snd_mixer_selem_set_playback_volume_all(m_elem, value);
+	}
+	else
+		set_normalized_playback_volume_all(m_elem, volume / 100.0, 0);
 }
