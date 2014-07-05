@@ -70,6 +70,7 @@ static gboolean asound_poll_cb(GIOChannel * source, GIOCondition condition,
 	int retval = snd_mixer_handle_events(m_mixer);
 	if(retval < 0) {
 		fprintf(stderr, "snd_mixer_handle_events: %s\n", snd_strerror(retval));
+		gtk_main_quit();
 		return FALSE;
 	}
 	return TRUE;
@@ -206,7 +207,7 @@ void asound_setup(const gchar * card, const gchar * channel,
 		{
 			GIOChannel * giochannel = g_io_channel_unix_new(pfd.fd);
 			g_io_add_watch_full(giochannel, G_PRIORITY_DEFAULT,
-				G_IO_IN, asound_poll_cb, NULL, NULL);
+				G_IO_IN | G_IO_ERR , asound_poll_cb, NULL, NULL);
 		}
 	}
 
