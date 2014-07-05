@@ -51,4 +51,5 @@ configure
 *Makefile.in
 *~
 src/volumeicon
+po/Makefile.in.in
 
