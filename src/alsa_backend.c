@@ -2,7 +2,7 @@
 // volumeicon
 //
 // alsa_backend.c - implements a volume control abstraction using alsa-lib
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -24,6 +24,7 @@
 #include <alsa/asoundlib.h>
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <math.h>
 
 #include "alsa_backend.h"
@@ -179,12 +180,12 @@ void asound_setup(const gchar * card, const gchar * channel,
 			card_override = g_strdup_printf("hw:%d", card_number);
 		}
 		ret = snd_card_next(&card_number);
-	} 
+	}
 
 	// Load the mixer for the provided cardname
 	snd_mixer_open(&m_mixer, 0);
 	if(snd_mixer_attach(m_mixer, (card_override != NULL ? card_override : m_device)) < 0) {
-		fprintf(stderr, "Failed to open sound device with name: %s\n", 
+		fprintf(stderr, "Failed to open sound device with name: %s\n",
 			(card_override != NULL ? card_override : m_device));
 		snd_mixer_close(m_mixer);
 		m_mixer = NULL;
