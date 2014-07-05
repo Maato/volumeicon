@@ -357,9 +357,17 @@ static void preferences_hotkey_toggle_toggled(GtkCellRendererToggle * cell_rende
 			gtk_list_store_set(GTK_LIST_STORE(gui->hotkey_store), &iter, 3, enabled, -1);
 			switch(hotkey)
 			{
-				case UP: config_set_hotkey_up_enabled(enabled); break;
-				case DOWN: config_set_hotkey_down_enabled(enabled); break;
-				case MUTE: config_set_hotkey_mute_enabled(enabled); break;
+			case UP:
+				config_set_hotkey_up_enabled(enabled);
+				break;
+			case DOWN:
+				config_set_hotkey_down_enabled(enabled);
+				break;
+			case MUTE:
+				config_set_hotkey_mute_enabled(enabled);
+				break;
+			default:
+				break;
 			}
 		}
 
@@ -390,10 +398,18 @@ static void preferences_hotkey_accel_edited(GtkCellRendererAccel * renderer,
 			gtk_list_store_set(GTK_LIST_STORE(gui->hotkey_store), &iter, 1, new_value, -1);
 			keybinder_unbind(old_value, hotkey_handle);
 			switch(hotkey)
-			{
-				case UP: config_set_hotkey_up(new_value); break;
-				case DOWN: config_set_hotkey_down(new_value); break;
-				case MUTE: config_set_hotkey_mute(new_value); break;
+            {
+			case UP:
+				config_set_hotkey_up(new_value);
+				break;
+			case DOWN:
+				config_set_hotkey_down(new_value);
+				break;
+			case MUTE:
+				config_set_hotkey_mute(new_value);
+				break;
+			default:
+				break;
 			}
 		}
 		g_free(new_value);
@@ -759,15 +775,18 @@ static void status_icon_on_scroll_event(GtkStatusIcon * status_icon,
 {
 	switch(event->direction)
 	{
-		case(GDK_SCROLL_UP):
-		case(GDK_SCROLL_RIGHT):
-			m_volume = clamp_volume(m_volume + config_get_stepsize());
-			break;
-		case(GDK_SCROLL_DOWN):
-		case(GDK_SCROLL_LEFT):
-			m_volume = clamp_volume(m_volume - config_get_stepsize());
-			break;
+	case(GDK_SCROLL_UP):
+	case(GDK_SCROLL_RIGHT):
+		m_volume = clamp_volume(m_volume + config_get_stepsize());
+		break;
+	case(GDK_SCROLL_DOWN):
+	case(GDK_SCROLL_LEFT):
+		m_volume = clamp_volume(m_volume - config_get_stepsize());
+		break;
+	default:
+		break;
 	}
+
 	backend_set_volume(m_volume);
 	if(m_mute)
 	{
