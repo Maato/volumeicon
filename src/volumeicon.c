@@ -117,7 +117,7 @@ static NotifyNotification * m_notification = NULL;
 static GtkWindow *m_popup_window = NULL;
 static GtkImage *m_popup_icon = NULL;
 static GtkProgressBar *m_pbar = NULL;
-static guint m_timeout_id = -1;
+static guint m_timeout_id = 0;
 
 static GtkStatusIcon * m_status_icon = NULL;
 static GtkWidget * m_scale_window = NULL;
@@ -970,6 +970,7 @@ static void scale_value_changed(GtkRange * range, gpointer user_data)
 
 static gboolean hide_popup(gpointer user_data)
 {
+    m_timeout_id = 0;
     gtk_widget_hide(GTK_WIDGET(m_popup_window));
     return FALSE;
 }
@@ -982,13 +983,15 @@ static void notification_show()
         if (type == NOTIFICATION_NATIVE)
         {
             gtk_widget_show_all(GTK_WIDGET(m_popup_window));
-            g_source_remove(m_timeout_id);
+            if (m_timeout_id)
+                g_source_remove(m_timeout_id);
             m_timeout_id = g_timeout_add(1500, (GSourceFunc)hide_popup, NULL);
         }
         #ifdef COMPILEWITH_NOTIFY
         else
         {
-            g_source_remove(m_timeout_id);
+            if (m_timeout_id)
+                g_source_remove(m_timeout_id);
             hide_popup(NULL);
             notify_notification_show(m_notification, NULL);
         }
@@ -996,7 +999,8 @@ static void notification_show()
     }
     else
     {
-        g_source_remove(m_timeout_id);
+        if (m_timeout_id)
+            g_source_remove(m_timeout_id);
         hide_popup(NULL);
     }
 }
