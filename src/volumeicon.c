@@ -145,7 +145,6 @@ static gboolean m_mute = FALSE;
 // Icons
 #define ICON_COUNT 8
 static GdkPixbuf * m_icons[ICON_COUNT];
-static gchar *ico_suffix = NULL;
 
 //##############################################################################
 // Function prototypes
@@ -583,6 +582,7 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gtk_entry_set_text(gui->mixer_entry, config_get_helper());
 	gtk_adjustment_set_value(gui->volume_adjustment,
 		(gdouble)config_get_stepsize());
+
 	g_signal_connect(G_OBJECT(gui->window), "destroy", G_CALLBACK(
 		preferences_window_destroy), NULL);
 	g_signal_connect(G_OBJECT(gui->window), "delete-event", G_CALLBACK(
@@ -857,26 +857,44 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     int icon_number = status_icon_get_number(volume, mute);
     if(icon_number != icon_cache || ignore_cache)
     {
-        gchar *icon_name;
-        if(icon_number == 1)
-            icon_name = g_strconcat("audio-volume-muted",ico_suffix,NULL);
-        else if(icon_number <= 3)
-            icon_name = g_strconcat("audio-volume-low",ico_suffix,NULL);
-        else if(icon_number <= 6)
-            icon_name = g_strconcat("audio-volume-medium",ico_suffix,NULL);
+        const gchar *icon_name;
+
+        if (icon_number == 1)
+            icon_name = "audio-volume-muted";
+        else if (icon_number <= 3)
+            icon_name = "audio-volume-low";
+        else if (icon_number <= 6)
+            icon_name = "audio-volume-medium";
         else
-            icon_name = g_strconcat("audio-volume-high",ico_suffix,NULL);
+            icon_name = "audio-volume-high";
 
         if(config_get_use_gtk_theme())
         {
-            gtk_status_icon_set_from_icon_name(m_status_icon, icon_name);
+            // Check if we are supposed to use the *-panel variant of an icon.
+            // Note that this only makes sense if we're using the default GTK
+            // icon theme as the icons that ship with volumeicon don't have
+            // panel-specific versions.
+            GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+            gchar *panel_icon_name = g_strdup_printf("%s-panel", icon_name);
+            if (config_get_use_panel_specific_icons() &&
+                gtk_icon_theme_has_icon(icon_theme, panel_icon_name))
+            {
+                gtk_status_icon_set_from_icon_name(
+                    m_status_icon, panel_icon_name);
+            }
+            else
+            {
+                gtk_status_icon_set_from_icon_name(m_status_icon, icon_name);
+            }
+            g_free(panel_icon_name);
         }
         else
         {
-            gtk_status_icon_set_from_pixbuf(m_status_icon,
-                                            m_icons[icon_number-1]);
+            gtk_status_icon_set_from_pixbuf(
+                m_status_icon, m_icons[icon_number-1]);
         }
 
+        // Always use the current GTK icon theme for notifications.
         #ifdef COMPILEWITH_NOTIFY
         notify_notification_update(m_notification, APPNAME, NULL, icon_name);
         #endif
@@ -884,7 +902,6 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
                                      GTK_ICON_SIZE_LARGE_TOOLBAR);
 
         icon_cache = icon_number;
-        g_free(icon_name);
     }
 
     if((volume != volume_cache || ignore_cache) && backend_get_channel())
@@ -903,8 +920,18 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     }
 }
 
+static void icon_theme_on_changed(GtkIconTheme *icon_theme, gpointer user_data)
+{
+	status_icon_update(m_mute, TRUE);
+}
+
 static void status_icon_setup(gboolean mute)
 {
+	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+
+	g_signal_connect(G_OBJECT(icon_theme), "changed",
+					 G_CALLBACK(icon_theme_on_changed), NULL);
+
 	m_status_icon = gtk_status_icon_new();
 	g_signal_connect(G_OBJECT(m_status_icon), "button_press_event",
 		G_CALLBACK(status_icon_on_button_press), NULL);
@@ -928,20 +955,22 @@ static void volume_icon_load_icons()
 {
 	if(config_get_use_gtk_theme())
 		return;
-	static int icons_loaded = 0;
+
+	static gboolean icons_loaded = FALSE;
+	const gchar *theme = config_get_theme();
 	int i;
+
 	for(i = 0; i < ICON_COUNT; i++)
 	{
-		gchar * icon_path = g_strdup_printf(ICONS_DIR "/%s/%d.png",
-			config_get_theme(), i+1);
-		if(icons_loaded && (NULL != m_icons[i]))
+		gchar *icon_path = g_strdup_printf(ICONS_DIR"/%s/%d.png", theme, i+1);
+		if(icons_loaded && m_icons[i])
 			g_object_unref(m_icons[i]);
 		m_icons[i] = gdk_pixbuf_new_from_file(icon_path, NULL);
-		if(NULL == m_icons[i])
+		if(!m_icons[i])
 			g_message("Failed to load '%s'", icon_path);
 		g_free(icon_path);
 	}
-	icons_loaded = 1;
+	icons_loaded = TRUE;
 }
 
 static void scale_update()
@@ -1172,13 +1201,6 @@ int main(int argc, char * argv[])
 		return EXIT_FAILURE;
 	}
 	signal(SIGCHLD, SIG_IGN);
-
-	// Use '-panel' icons, but only if available
-	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
-	if(gtk_icon_theme_has_icon(icon_theme, "audio-volume-muted-panel"))
-	{
-		ico_suffix = "-panel";
-	}
 
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
