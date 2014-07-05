@@ -686,7 +686,7 @@ static gboolean scale_timeout(gpointer data)
 	GdkDevice *pointer;
 	gint x, y;
 
-	root_window = gtk_widget_get_root_window(m_scale_window);
+	root_window = gdk_screen_get_root_window(gtk_widget_get_screen(m_scale_window));
 	device_manager = gdk_display_get_device_manager(gdk_window_get_display(root_window));
 	pointer = gdk_device_manager_get_client_pointer(device_manager);
 	gdk_window_get_device_position(root_window, pointer, &x, &y, NULL);
