@@ -92,6 +92,7 @@ typedef struct
 	GtkListStore * channel_store;
 	GtkComboBox * theme_combobox;
 	GtkListStore * theme_store;
+	GtkCheckButton * use_panel_specific_icons_checkbutton;
 	GtkListStore * hotkey_store;
 	GtkButton * close_button;
 	GtkRadioButton * mute_radiobutton;
@@ -273,6 +274,11 @@ static void preferences_theme_combobox_changed(GtkComboBox * widget,
 			&theme, -1);
 		config_set_theme(theme);
 		g_free(theme);
+
+		// Update the sensitivity of `use_panel_specific_icons_checkbutton'.
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(gui->use_panel_specific_icons_checkbutton),
+			config_get_use_gtk_theme());
 	}
 	volume_icon_load_icons();
 	status_icon_update(m_mute, TRUE);
@@ -329,6 +335,14 @@ static void preferences_mixer_entry_changed(GtkEditable * editable,
 	gpointer user_data)
 {
 	config_set_helper(gtk_entry_get_text(gui->mixer_entry));
+}
+
+static void preferences_use_panel_specific_icons_checkbutton_toggled(
+    GtkCheckButton *widget, gpointer user_data)
+{
+	config_set_use_panel_specific_icons(
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
+	status_icon_update(m_mute, TRUE);
 }
 
 static void preferences_hotkey_toggle_toggled(GtkCellRendererToggle * cell_renderer,
@@ -475,6 +489,7 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->channel_store = GTK_LIST_STORE(getobj("channel_name_model"));
 	gui->theme_combobox = GTK_COMBO_BOX(getobj("theme_combobox"));
 	gui->theme_store = GTK_LIST_STORE(getobj("theme_name_model"));
+	gui->use_panel_specific_icons_checkbutton = GTK_CHECK_BUTTON(getobj("use_panel_specific_icons_checkbutton"));
 	gui->hotkey_store = GTK_LIST_STORE(getobj("hotkey_binding_model"));
 	gui->close_button = GTK_BUTTON(getobj("close_button"));
 	gui->mute_radiobutton = GTK_RADIO_BUTTON(getobj("mute_radiobutton"));
@@ -537,18 +552,27 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	GtkTreeIter tree_iter;
 	gtk_list_store_append(gui->theme_store, &tree_iter);
 	gtk_list_store_set(gui->theme_store, &tree_iter, 0, "Default", -1);
-	if(config_get_use_gtk_theme())
+	gboolean use_gtk_theme = config_get_use_gtk_theme();
+	if(use_gtk_theme)
 		gtk_combo_box_set_active_iter(gui->theme_combobox, &tree_iter);
 	GDir * themedir = g_dir_open(ICONS_DIR, 0, NULL);
-	const gchar * name;
-	while((name = g_dir_read_name(themedir)))
+	if (themedir)
 	{
-		gtk_list_store_append(gui->theme_store, &tree_iter);
-		gtk_list_store_set(gui->theme_store, &tree_iter, 0, name, -1);
-		if(g_strcmp0(name, config_get_theme()) == 0)
-			gtk_combo_box_set_active_iter(gui->theme_combobox, &tree_iter);
+		const gchar * name;
+		while((name = g_dir_read_name(themedir)))
+		{
+			gtk_list_store_append(gui->theme_store, &tree_iter);
+			gtk_list_store_set(gui->theme_store, &tree_iter, 0, name, -1);
+			if(g_strcmp0(name, config_get_theme()) == 0)
+				gtk_combo_box_set_active_iter(gui->theme_combobox, &tree_iter);
+		}
+		g_dir_close(themedir);
 	}
-	g_dir_close(themedir);
+	gtk_widget_set_sensitive(
+		GTK_WIDGET(gui->use_panel_specific_icons_checkbutton), use_gtk_theme);
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(gui->use_panel_specific_icons_checkbutton),
+		config_get_use_panel_specific_icons());
 
 	// Fill the hotkey binding model
 	gtk_list_store_append(gui->hotkey_store, &tree_iter);
@@ -578,11 +602,12 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
     gtk_widget_set_sensitive(GTK_WIDGET(gui->notification_combobox),
                              config_get_show_notification());
 
-	// Initialize widgets / connect signals
+	// Initialize widgets
 	gtk_entry_set_text(gui->mixer_entry, config_get_helper());
 	gtk_adjustment_set_value(gui->volume_adjustment,
 		(gdouble)config_get_stepsize());
 
+	// Connect signals
 	g_signal_connect(G_OBJECT(gui->window), "destroy", G_CALLBACK(
 		preferences_window_destroy), NULL);
 	g_signal_connect(G_OBJECT(gui->window), "delete-event", G_CALLBACK(
@@ -599,6 +624,10 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		G_CALLBACK(preferences_volume_adjustment_changed), NULL);
 	g_signal_connect(G_OBJECT(gui->mixer_entry), "changed", G_CALLBACK(
 		preferences_mixer_entry_changed), NULL);
+	g_signal_connect(
+		G_OBJECT(gui->use_panel_specific_icons_checkbutton), "toggled",
+		G_CALLBACK(preferences_use_panel_specific_icons_checkbutton_toggled),
+		NULL);
 	g_signal_connect(G_OBJECT(gui->mute_radiobutton), "toggled", G_CALLBACK(
 		preferences_mute_radiobutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->mmb_mixer_radiobutton), "toggled", G_CALLBACK(
