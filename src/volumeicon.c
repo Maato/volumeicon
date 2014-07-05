@@ -100,8 +100,8 @@ typedef struct
 	GtkRadioButton * mmb_mixer_radiobutton;
 	GtkCheckButton * use_horizontal_slider_checkbutton;
 	GtkCheckButton * show_sound_level_checkbutton;
-	GtkCellRenderer * cra_hotkey;
-	GtkCellRendererToggle * crt_hotkey;
+	GtkCellRenderer * hotkey_accel;
+	GtkCellRendererToggle * hotkey_toggle;
 	GtkCheckButton * use_transparent_background_checkbutton;
     GtkCheckButton * show_notification_checkbutton;
     GtkComboBox * notification_combobox;
@@ -332,7 +332,7 @@ static void preferences_mixer_entry_changed(GtkEditable * editable,
 	config_set_helper(gtk_entry_get_text(gui->mixer_entry));
 }
 
-static void preferences_crt_toggled(GtkCellRendererToggle * cell_renderer,
+static void preferences_hotkey_toggle_toggled(GtkCellRendererToggle * cell_renderer,
 	gchar * path, gpointer user_data)
 {
 	GtkTreeIter iter;
@@ -367,7 +367,7 @@ static void preferences_crt_toggled(GtkCellRendererToggle * cell_renderer,
 	}
 }
 
-static void preferences_cra_accel_edited(GtkCellRendererAccel * renderer,
+static void preferences_hotkey_accel_edited(GtkCellRendererAccel * renderer,
 	gchar * path, guint accel_key, GdkModifierType mask, guint hardware_keycode,
 	gpointer user_data)
 {
@@ -451,7 +451,7 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 
 	// Get widgets from builder
 	#define getobj(x) gtk_builder_get_object(gui->builder,x)
-	gui->window = GTK_WIDGET(getobj("window1"));
+	gui->window = GTK_WIDGET(getobj("window"));
 	gui->volume_adjustment = GTK_ADJUSTMENT(getobj("volume_adjustment"));
 	gui->mixer_entry = GTK_ENTRY(getobj("mixer_entry"));
 	gui->device_combobox = GTK_COMBO_BOX(getobj("device_combobox"));
@@ -468,8 +468,8 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->mmb_mixer_radiobutton = GTK_RADIO_BUTTON(getobj("mmb_mixer_radiobutton"));
 	gui->use_horizontal_slider_checkbutton = GTK_CHECK_BUTTON(getobj("use_horizontal_slider"));
 	gui->show_sound_level_checkbutton = GTK_CHECK_BUTTON(getobj("show_sound_level"));
-	gui->cra_hotkey = GTK_CELL_RENDERER(getobj("cra_hotkey"));
-	gui->crt_hotkey = GTK_CELL_RENDERER_TOGGLE(getobj("crt_hotkey"));
+	gui->hotkey_accel = GTK_CELL_RENDERER(getobj("hotkey_cellrendereraccel"));
+	gui->hotkey_toggle = GTK_CELL_RENDERER_TOGGLE(getobj("hotkey_cellrenderertoggle"));
 	gui->use_transparent_background_checkbutton = GTK_CHECK_BUTTON(getobj("use_transparent_background"));
     gui->show_notification_checkbutton = GTK_CHECK_BUTTON(getobj("show_notifications"));
     gui->notification_combobox = GTK_COMBO_BOX(getobj("notification_combobox"));
@@ -591,10 +591,10 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		preferences_use_horizontal_slider_checkbutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->show_sound_level_checkbutton), "toggled", G_CALLBACK(
 		preferences_show_sound_level_checkbutton_toggled), NULL);
-	g_signal_connect(G_OBJECT(gui->cra_hotkey), "accel-edited", G_CALLBACK(
-		preferences_cra_accel_edited), NULL);
-	g_signal_connect(G_OBJECT(gui->crt_hotkey), "toggled", G_CALLBACK(
-		preferences_crt_toggled), NULL);
+	g_signal_connect(G_OBJECT(gui->hotkey_accel), "accel-edited", G_CALLBACK(
+		preferences_hotkey_accel_edited), NULL);
+	g_signal_connect(G_OBJECT(gui->hotkey_toggle), "toggled", G_CALLBACK(
+		preferences_hotkey_toggle_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->use_transparent_background_checkbutton), "toggled", G_CALLBACK(
 		preferences_use_transparent_background_checkbutton_toggled), NULL);
     g_signal_connect(
