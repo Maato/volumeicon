@@ -92,6 +92,7 @@ typedef struct
 	GtkListStore * channel_store;
 	GtkComboBox * theme_combobox;
 	GtkListStore * theme_store;
+	GtkCheckButton * use_panel_specific_icons_checkbutton;
 	GtkListStore * hotkey_store;
 	GtkButton * close_button;
 	GtkRadioButton * mute_radiobutton;
@@ -145,7 +146,6 @@ static gboolean m_mute = FALSE;
 // Icons
 #define ICON_COUNT 8
 static GdkPixbuf * m_icons[ICON_COUNT];
-static gchar *ico_suffix = NULL;
 
 //##############################################################################
 // Function prototypes
@@ -274,6 +274,11 @@ static void preferences_theme_combobox_changed(GtkComboBox * widget,
 			&theme, -1);
 		config_set_theme(theme);
 		g_free(theme);
+
+		// Update the sensitivity of `use_panel_specific_icons_checkbutton'.
+		gtk_widget_set_sensitive(
+			GTK_WIDGET(gui->use_panel_specific_icons_checkbutton),
+			config_get_use_gtk_theme());
 	}
 	volume_icon_load_icons();
 	status_icon_update(m_mute, TRUE);
@@ -330,6 +335,14 @@ static void preferences_mixer_entry_changed(GtkEditable * editable,
 	gpointer user_data)
 {
 	config_set_helper(gtk_entry_get_text(gui->mixer_entry));
+}
+
+static void preferences_use_panel_specific_icons_checkbutton_toggled(
+    GtkCheckButton *widget, gpointer user_data)
+{
+	config_set_use_panel_specific_icons(
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
+	status_icon_update(m_mute, TRUE);
 }
 
 static void preferences_hotkey_toggle_toggled(GtkCellRendererToggle * cell_renderer,
@@ -476,6 +489,7 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	gui->channel_store = GTK_LIST_STORE(getobj("channel_name_model"));
 	gui->theme_combobox = GTK_COMBO_BOX(getobj("theme_combobox"));
 	gui->theme_store = GTK_LIST_STORE(getobj("theme_name_model"));
+	gui->use_panel_specific_icons_checkbutton = GTK_CHECK_BUTTON(getobj("use_panel_specific_icons_checkbutton"));
 	gui->hotkey_store = GTK_LIST_STORE(getobj("hotkey_binding_model"));
 	gui->close_button = GTK_BUTTON(getobj("close_button"));
 	gui->mute_radiobutton = GTK_RADIO_BUTTON(getobj("mute_radiobutton"));
@@ -538,18 +552,27 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 	GtkTreeIter tree_iter;
 	gtk_list_store_append(gui->theme_store, &tree_iter);
 	gtk_list_store_set(gui->theme_store, &tree_iter, 0, "Default", -1);
-	if(config_get_use_gtk_theme())
+	gboolean use_gtk_theme = config_get_use_gtk_theme();
+	if(use_gtk_theme)
 		gtk_combo_box_set_active_iter(gui->theme_combobox, &tree_iter);
 	GDir * themedir = g_dir_open(ICONS_DIR, 0, NULL);
-	const gchar * name;
-	while((name = g_dir_read_name(themedir)))
+	if (themedir)
 	{
-		gtk_list_store_append(gui->theme_store, &tree_iter);
-		gtk_list_store_set(gui->theme_store, &tree_iter, 0, name, -1);
-		if(g_strcmp0(name, config_get_theme()) == 0)
-			gtk_combo_box_set_active_iter(gui->theme_combobox, &tree_iter);
+		const gchar * name;
+		while((name = g_dir_read_name(themedir)))
+		{
+			gtk_list_store_append(gui->theme_store, &tree_iter);
+			gtk_list_store_set(gui->theme_store, &tree_iter, 0, name, -1);
+			if(g_strcmp0(name, config_get_theme()) == 0)
+				gtk_combo_box_set_active_iter(gui->theme_combobox, &tree_iter);
+		}
+		g_dir_close(themedir);
 	}
-	g_dir_close(themedir);
+	gtk_widget_set_sensitive(
+		GTK_WIDGET(gui->use_panel_specific_icons_checkbutton), use_gtk_theme);
+	gtk_toggle_button_set_active(
+		GTK_TOGGLE_BUTTON(gui->use_panel_specific_icons_checkbutton),
+		config_get_use_panel_specific_icons());
 
 	// Fill the hotkey binding model
 	gtk_list_store_append(gui->hotkey_store, &tree_iter);
@@ -579,10 +602,12 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
     gtk_widget_set_sensitive(GTK_WIDGET(gui->notification_combobox),
                              config_get_show_notification());
 
-	// Initialize widgets / connect signals
+	// Initialize widgets
 	gtk_entry_set_text(gui->mixer_entry, config_get_helper());
 	gtk_adjustment_set_value(gui->volume_adjustment,
 		(gdouble)config_get_stepsize());
+
+	// Connect signals
 	g_signal_connect(G_OBJECT(gui->window), "destroy", G_CALLBACK(
 		preferences_window_destroy), NULL);
 	g_signal_connect(G_OBJECT(gui->window), "delete-event", G_CALLBACK(
@@ -599,6 +624,10 @@ static void menu_preferences_on_activate(GtkMenuItem * menuitem,
 		G_CALLBACK(preferences_volume_adjustment_changed), NULL);
 	g_signal_connect(G_OBJECT(gui->mixer_entry), "changed", G_CALLBACK(
 		preferences_mixer_entry_changed), NULL);
+	g_signal_connect(
+		G_OBJECT(gui->use_panel_specific_icons_checkbutton), "toggled",
+		G_CALLBACK(preferences_use_panel_specific_icons_checkbutton_toggled),
+		NULL);
 	g_signal_connect(G_OBJECT(gui->mute_radiobutton), "toggled", G_CALLBACK(
 		preferences_mute_radiobutton_toggled), NULL);
 	g_signal_connect(G_OBJECT(gui->mmb_mixer_radiobutton), "toggled", G_CALLBACK(
@@ -857,26 +886,44 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     int icon_number = status_icon_get_number(volume, mute);
     if(icon_number != icon_cache || ignore_cache)
     {
-        gchar *icon_name;
-        if(icon_number == 1)
-            icon_name = g_strconcat("audio-volume-muted",ico_suffix,NULL);
-        else if(icon_number <= 3)
-            icon_name = g_strconcat("audio-volume-low",ico_suffix,NULL);
-        else if(icon_number <= 6)
-            icon_name = g_strconcat("audio-volume-medium",ico_suffix,NULL);
+        const gchar *icon_name;
+
+        if (icon_number == 1)
+            icon_name = "audio-volume-muted";
+        else if (icon_number <= 3)
+            icon_name = "audio-volume-low";
+        else if (icon_number <= 6)
+            icon_name = "audio-volume-medium";
         else
-            icon_name = g_strconcat("audio-volume-high",ico_suffix,NULL);
+            icon_name = "audio-volume-high";
 
         if(config_get_use_gtk_theme())
         {
-            gtk_status_icon_set_from_icon_name(m_status_icon, icon_name);
+            // Check if we are supposed to use the *-panel variant of an icon.
+            // Note that this only makes sense if we're using the default GTK
+            // icon theme as the icons that ship with volumeicon don't have
+            // panel-specific versions.
+            GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+            gchar *panel_icon_name = g_strdup_printf("%s-panel", icon_name);
+            if (config_get_use_panel_specific_icons() &&
+                gtk_icon_theme_has_icon(icon_theme, panel_icon_name))
+            {
+                gtk_status_icon_set_from_icon_name(
+                    m_status_icon, panel_icon_name);
+            }
+            else
+            {
+                gtk_status_icon_set_from_icon_name(m_status_icon, icon_name);
+            }
+            g_free(panel_icon_name);
         }
         else
         {
-            gtk_status_icon_set_from_pixbuf(m_status_icon,
-                                            m_icons[icon_number-1]);
+            gtk_status_icon_set_from_pixbuf(
+                m_status_icon, m_icons[icon_number-1]);
         }
 
+        // Always use the current GTK icon theme for notifications.
         #ifdef COMPILEWITH_NOTIFY
         notify_notification_update(m_notification, APPNAME, NULL, icon_name);
         #endif
@@ -884,7 +931,6 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
                                      GTK_ICON_SIZE_LARGE_TOOLBAR);
 
         icon_cache = icon_number;
-        g_free(icon_name);
     }
 
     if((volume != volume_cache || ignore_cache) && backend_get_channel())
@@ -903,8 +949,18 @@ static void status_icon_update(gboolean mute, gboolean ignore_cache)
     }
 }
 
+static void icon_theme_on_changed(GtkIconTheme *icon_theme, gpointer user_data)
+{
+	status_icon_update(m_mute, TRUE);
+}
+
 static void status_icon_setup(gboolean mute)
 {
+	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
+
+	g_signal_connect(G_OBJECT(icon_theme), "changed",
+					 G_CALLBACK(icon_theme_on_changed), NULL);
+
 	m_status_icon = gtk_status_icon_new();
 	g_signal_connect(G_OBJECT(m_status_icon), "button_press_event",
 		G_CALLBACK(status_icon_on_button_press), NULL);
@@ -928,20 +984,22 @@ static void volume_icon_load_icons()
 {
 	if(config_get_use_gtk_theme())
 		return;
-	static int icons_loaded = 0;
+
+	static gboolean icons_loaded = FALSE;
+	const gchar *theme = config_get_theme();
 	int i;
+
 	for(i = 0; i < ICON_COUNT; i++)
 	{
-		gchar * icon_path = g_strdup_printf(ICONS_DIR "/%s/%d.png",
-			config_get_theme(), i+1);
-		if(icons_loaded && (NULL != m_icons[i]))
+		gchar *icon_path = g_strdup_printf(ICONS_DIR"/%s/%d.png", theme, i+1);
+		if(icons_loaded && m_icons[i])
 			g_object_unref(m_icons[i]);
 		m_icons[i] = gdk_pixbuf_new_from_file(icon_path, NULL);
-		if(NULL == m_icons[i])
+		if(!m_icons[i])
 			g_message("Failed to load '%s'", icon_path);
 		g_free(icon_path);
 	}
-	icons_loaded = 1;
+	icons_loaded = TRUE;
 }
 
 static void scale_update()
@@ -1172,13 +1230,6 @@ int main(int argc, char * argv[])
 		return EXIT_FAILURE;
 	}
 	signal(SIGCHLD, SIG_IGN);
-
-	// Use '-panel' icons, but only if available
-	GtkIconTheme *icon_theme = gtk_icon_theme_get_default();
-	if(gtk_icon_theme_has_icon(icon_theme, "audio-volume-muted-panel"))
-	{
-		ico_suffix = "-panel";
-	}
 
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY

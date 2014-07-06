@@ -29,6 +29,7 @@ void config_initialize();
 
 void config_set_helper(const gchar * helper);
 void config_set_theme(const gchar * theme);
+void config_set_use_panel_specific_icons(gboolean active);
 void config_set_card(const gchar * card);
 void config_set_channel(const gchar * channel);
 void config_set_stepsize(int stepsize);
@@ -48,6 +49,7 @@ void config_set_notification_type(gint type);
 
 const gchar * config_get_helper();
 const gchar * config_get_theme();
+gboolean config_get_use_panel_specific_icons();
 const gchar * config_get_card();
 const gchar * config_get_channel();
 gboolean config_get_use_gtk_theme();

@@ -21,7 +21,6 @@
 // with this program.  If not, see <http://www.gnu.org/licenses/>.
 //##############################################################################
 
-#include <gtk/gtk.h>
 #include <glib/gstdio.h>
 #include <assert.h>
 
@@ -39,6 +38,7 @@
 static char * m_config_file = NULL;
 static char * m_helper_program = NULL;
 static gchar * m_theme = NULL;
+static gboolean m_use_panel_specific_icons = FALSE;
 static gchar * m_card = NULL;
 static gchar * m_channel = NULL;
 static gchar * m_hotkey_up = NULL;
@@ -95,6 +95,7 @@ static void config_read()
 	m_channel = g_key_file_get_value(kf, "Alsa", "channel", NULL);
 	m_stepsize = g_key_file_get_integer(kf, "StatusIcon", "stepsize", NULL);
 	m_theme = g_key_file_get_value(kf, "StatusIcon", "theme", NULL);
+	m_use_panel_specific_icons = g_key_file_get_boolean(kf, "StatusIcon", "use_panel_specific_icons", NULL);
 	m_lmb_slider = g_key_file_get_boolean(kf, "StatusIcon", "lmb_slider", NULL);
 	m_mmb_mute = g_key_file_get_boolean(kf, "StatusIcon", "mmb_mute", NULL);
 	m_use_horizontal_slider = g_key_file_get_boolean(kf, "StatusIcon", "use_horizontal_slider", NULL);
@@ -127,6 +128,11 @@ void config_set_theme(const gchar * theme)
 {
 	g_free(m_theme);
 	m_theme = g_strdup(theme);
+}
+
+void config_set_use_panel_specific_icons(gboolean active)
+{
+	m_use_panel_specific_icons = active;
 }
 
 void config_set_card(const gchar * card)
@@ -244,6 +250,11 @@ gboolean config_get_use_gtk_theme()
 	return g_strcmp0(m_theme, "Default") == 0 ? TRUE : FALSE;
 }
 
+gboolean config_get_use_panel_specific_icons()
+{
+	return m_use_panel_specific_icons;
+}
+
 gboolean config_get_left_mouse_slider()
 {
 	return m_lmb_slider;
@@ -319,6 +330,7 @@ void config_write()
 	g_key_file_set_boolean(kf, "StatusIcon", "mmb_mute", m_mmb_mute);
 	g_key_file_set_boolean(kf, "StatusIcon", "use_horizontal_slider", m_use_horizontal_slider);
 	g_key_file_set_boolean(kf, "StatusIcon", "show_sound_level", m_show_sound_level);
+	g_key_file_set_boolean(kf, "StatusIcon", "use_panel_specific_icons", m_use_panel_specific_icons);
 	g_key_file_set_boolean(kf, "Hotkeys", "up_enabled", m_hotkey_up_enabled);
 	g_key_file_set_boolean(kf, "Hotkeys", "down_enabled", m_hotkey_down_enabled);
 	g_key_file_set_boolean(kf, "Hotkeys", "mute_enabled", m_hotkey_mute_enabled);
