@@ -25,14 +25,14 @@ SpacesBeforeTrailingComments: 1
 Standard:        Cpp03
 IndentWidth:     4
 TabWidth:        4
-UseTab:          Never
+UseTab:          ForIndentation
 BreakBeforeBraces: Stroustrup
 IndentFunctionDeclarationAfterType: false
 SpacesInParentheses: false
 SpacesInAngles:  true
 SpaceInEmptyParentheses: false
 SpacesInCStyleCastParentheses: false
-SpaceAfterControlStatementKeyword: true
+SpaceAfterControlStatementKeyword: false
 SpaceBeforeAssignmentOperators: true
 ContinuationIndentWidth: 4
 ...
