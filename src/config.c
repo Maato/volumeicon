@@ -53,7 +53,6 @@ static gboolean m_show_sound_level = FALSE;
 static gboolean m_hotkey_up_enabled = FALSE;
 static gboolean m_hotkey_down_enabled = FALSE;
 static gboolean m_hotkey_mute_enabled = FALSE;
-static gboolean m_use_transparent_background = FALSE;
 static gboolean m_show_notification = TRUE;
 static gint m_notification_type = 0;
 
@@ -108,7 +107,6 @@ static void config_read()
 	m_hotkey_up_enabled = g_key_file_get_boolean(kf, "Hotkeys", "up_enabled", NULL);
 	m_hotkey_down_enabled = g_key_file_get_boolean(kf, "Hotkeys", "down_enabled", NULL);
 	m_hotkey_mute_enabled = g_key_file_get_boolean(kf, "Hotkeys", "mute_enabled", NULL);
-	m_use_transparent_background = g_key_file_get_boolean(kf, "StatusIcon", "use_transparent_background", NULL);
     m_show_notification = g_key_file_get_boolean(kf, "Notification", "show_notification", NULL);
     m_notification_type = g_key_file_get_integer(kf, "Notification", "notification_type", NULL);
 	g_key_file_free(kf);
@@ -212,11 +210,6 @@ void config_set_hotkey_mute_enabled(gboolean enabled)
 	m_hotkey_mute_enabled = enabled;
 }
 
-void config_set_use_transparent_background(gboolean active)
-{
-	m_use_transparent_background = active;
-}
-
 void config_set_show_notification(gboolean active)
 {
     m_show_notification = active;
@@ -317,11 +310,6 @@ gboolean config_get_hotkey_mute_enabled()
 	return m_hotkey_mute_enabled;
 }
 
-gboolean config_get_use_transparent_background()
-{
-	return m_use_transparent_background;
-}
-
 gboolean config_get_show_notification()
 {
     return m_show_notification;
@@ -346,7 +334,6 @@ void config_write()
 	g_key_file_set_boolean(kf, "Hotkeys", "up_enabled", m_hotkey_up_enabled);
 	g_key_file_set_boolean(kf, "Hotkeys", "down_enabled", m_hotkey_down_enabled);
 	g_key_file_set_boolean(kf, "Hotkeys", "mute_enabled", m_hotkey_mute_enabled);
-	g_key_file_set_boolean(kf, "StatusIcon", "use_transparent_background", m_use_transparent_background);
 	g_key_file_set_boolean(kf, "Alsa", "decibel_scale", m_decibel_scale);
 	if(m_helper_program)
 		g_key_file_set_value(kf, "StatusIcon", "onclick", m_helper_program);

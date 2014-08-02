@@ -35,7 +35,7 @@ AC_ARG_ENABLE([notify],
   [notify=no])
 
 # Check for gtk
-PKG_CHECK_MODULES([GTK], [gtk+-3.0 >= 3.0])
+PKG_CHECK_MODULES([GTK], [gtk+-2.0 >= 2.24])
 AC_SUBST(GTK_CFLAGS)
 AC_SUBST(GTK_LIBS)
 

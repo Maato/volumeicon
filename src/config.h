@@ -44,7 +44,6 @@ void config_set_hotkey_mute(const gchar * mute);
 void config_set_hotkey_up_enabled(gboolean enabled);
 void config_set_hotkey_down_enabled(gboolean enabled);
 void config_set_hotkey_mute_enabled(gboolean enabled);
-void config_set_use_transparent_background(gboolean active);
 void config_set_show_notification(gboolean active);
 void config_set_notification_type(gint type);
 
@@ -66,7 +65,6 @@ const gchar * config_get_hotkey_mute();
 gboolean config_get_hotkey_up_enabled();
 gboolean config_get_hotkey_down_enabled();
 gboolean config_get_hotkey_mute_enabled();
-gboolean config_get_use_transparent_background();
 gboolean config_get_show_notification();
 gint config_get_notification_type();
 
