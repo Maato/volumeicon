@@ -29,6 +29,7 @@
 
 #include "alsa_backend.h"
 #include "alsa_volume_mapping.h"
+#include "config.h"
 
 //##############################################################################
 // Static variables
