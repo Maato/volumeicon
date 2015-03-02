@@ -1216,11 +1216,14 @@ int main(int argc, char * argv[])
 	GError * error = 0;
 	gchar * config_name = 0;
 	gchar * device_name = 0;
+	gboolean print_version = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
 			_("Alternate name to use for config file, default is volumeicon"), "name" },
 		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name,
 			_("Mixer device name"), "name" },
+		{ "version", 'v', 0, G_OPTION_ARG_NONE, &print_version,
+			_("Output version number and exit"), NULL },
 		{ NULL }
 	};
 	if(!gtk_init_with_args(&argc, &argv, "", options, "", &error)) {
@@ -1230,6 +1233,11 @@ int main(int argc, char * argv[])
 		return EXIT_FAILURE;
 	}
 	signal(SIGCHLD, SIG_IGN);
+
+	if(print_version) {
+		g_fprintf(stdout, "%s %s\n", APPNAME, VERSION);
+		return EXIT_SUCCESS;
+	}
 
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
