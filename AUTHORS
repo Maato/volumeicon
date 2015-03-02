@@ -2,6 +2,9 @@ Volume Icon authors/contributors:
 
 Maato <maato@softwarebakery.com>
  - Developer
+
+Niklas Koep <niklas.koep@gmail.com>
+ - Lots of fixes, and help on github.
  
 David Gidwani <david.gidwani@gmail.com>
  - Hotkey support
@@ -33,3 +36,9 @@ Dan Church
 Valère Monseur
  - Added option for transparent slider background.
  - Various small fixes.
+
+Steven Honeyman
+ - Only use gtk -panel icons if they exist.
+
+Mateusz Łukasik <mati75@linuxmint.pl>
+ - Polish translation
