@@ -1131,11 +1131,12 @@ static void scale_setup()
 {
 	GdkScreen *screen;
 
-	if(config_get_use_horizontal_slider())
+	if(config_get_use_horizontal_slider()) {
 		m_scale = gtk_scale_new_with_range(GTK_ORIENTATION_HORIZONTAL, 0.0, 100.0, 1.0);
-	else
+	} else {
 		m_scale = gtk_scale_new_with_range(GTK_ORIENTATION_VERTICAL, 0.0, 100.0, 1.0);
-	gtk_range_set_inverted(GTK_RANGE(m_scale), TRUE);
+		gtk_range_set_inverted(GTK_RANGE(m_scale), TRUE);
+	}
 	gtk_scale_set_draw_value(GTK_SCALE(m_scale), config_get_show_sound_level());
 
 	m_scale_window = gtk_window_new(GTK_WINDOW_POPUP);
