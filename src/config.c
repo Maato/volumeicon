@@ -41,6 +41,7 @@ static struct config {
     // Alsa
     gchar *card; // TODO: Rename this to device.
     gchar *channel;
+    gboolean decibel_scale;
 
     // Notifications
     gboolean show_notification;
@@ -61,7 +62,6 @@ static struct config {
     // Layout
     gboolean use_horizontal_slider;
     gboolean show_sound_level;
-    gboolean use_transparent_background;
 
     // Hotkeys
     gboolean hotkey_up_enabled;
@@ -76,6 +76,7 @@ static struct config {
     // Alsa
     .card = NULL,
     .channel = NULL,
+    .decibel_scale = FALSE,
 
     // Notifications
     .show_notification = TRUE,
@@ -96,7 +97,6 @@ static struct config {
     // Layout
     .use_horizontal_slider = FALSE,
     .show_sound_level = FALSE,
-    .use_transparent_background = FALSE,
 
     // Hotkeys
     .hotkey_up_enabled = FALSE,
@@ -151,6 +151,7 @@ static void config_read(void)
     // Alsa
     m_config.card = GET_STRING("Alsa", "card");
     m_config.channel = GET_STRING("Alsa", "channel");
+    m_config.decibel_scale = GET_BOOL("Alsa", "decibel_scale");
 
     // Notifications
     m_config.show_notification = GET_BOOL("Notification", "show_notification");
@@ -173,8 +174,6 @@ static void config_read(void)
     m_config.use_horizontal_slider = GET_BOOL(
         "StatusIcon", "use_horizontal_slider");
     m_config.show_sound_level = GET_BOOL("StatusIcon", "show_sound_level");
-    m_config.use_transparent_background = GET_BOOL(
-        "StatusIcon", "use_transparent_background");
 
     // Hotkeys
     m_config.hotkey_up_enabled = GET_BOOL("Hotkeys", "up_enabled");
@@ -210,6 +209,11 @@ void config_set_channel(const gchar *channel)
 {
     g_free(m_config.channel);
     m_config.channel = g_strdup(channel);
+}
+
+void config_set_decibel_scale(gboolean decibel_scale)
+{
+    m_config.decibel_scale = decibel_scale;
 }
 
 // Notifications
@@ -269,11 +273,6 @@ void config_set_show_sound_level(gboolean active)
     m_config.show_sound_level = active;
 }
 
-void config_set_use_transparent_background(gboolean active)
-{
-    m_config.use_transparent_background = active;
-}
-
 // Hotkey
 void config_set_hotkey_up_enabled(gboolean enabled)
 {
@@ -321,6 +320,11 @@ const gchar *config_get_card(void)
 const gchar *config_get_channel(void)
 {
     return m_config.channel;
+}
+
+gboolean config_get_decibel_scale()
+{
+    return m_config.decibel_scale;
 }
 
 // Notifications
@@ -383,11 +387,6 @@ gboolean config_get_show_sound_level(void)
     return m_config.show_sound_level;
 }
 
-gboolean config_get_use_transparent_background(void)
-{
-    return m_config.use_transparent_background;
-}
-
 // Hotkeys
 gboolean config_get_hotkey_up_enabled(void)
 {
@@ -439,6 +438,7 @@ void config_write(void)
         SET_STRING("Alsa", "card", m_config.card);
     if(m_config.channel)
         SET_STRING("Alsa", "channel", m_config.channel);
+    SET_BOOL("Alsa", "decibel_scale", m_config.decibel_scale);
 
     // Notifications
     SET_BOOL("Notification", "show_notification", m_config.show_notification);
@@ -463,8 +463,6 @@ void config_write(void)
     SET_BOOL("StatusIcon", "use_horizontal_slider",
              m_config.use_horizontal_slider);
     SET_BOOL("StatusIcon", "show_sound_level", m_config.show_sound_level);
-    SET_BOOL("StatusIcon", "use_transparent_background",
-             m_config.use_transparent_background);
 
     // Hotkeys
     SET_BOOL("Hotkeys", "up_enabled", m_config.hotkey_up_enabled);

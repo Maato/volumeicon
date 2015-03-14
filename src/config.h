@@ -31,6 +31,7 @@
 // Alsa
 void config_set_card(const gchar *card);
 void config_set_channel(const gchar *channel);
+void config_set_decibel_scale(gboolean decibel_scale);
 
 // Notifications
 void config_set_show_notification(gboolean active);
@@ -51,7 +52,6 @@ void config_set_middle_mouse_mute(gboolean active);
 // Layout
 void config_set_use_horizontal_slider(gboolean active);
 void config_set_show_sound_level(gboolean active);
-void config_set_use_transparent_background(gboolean active);
 
 // Hotkeys
 void config_set_hotkey_up_enabled(gboolean enabled);
@@ -68,6 +68,7 @@ void config_set_hotkey_mute(const gchar *mute);
 // Alsa
 const gchar *config_get_card(void);
 const gchar *config_get_channel(void);
+gboolean config_get_decibel_scale(void);
 
 // Notifications
 gboolean config_get_show_notification(void);
@@ -89,7 +90,6 @@ gboolean config_get_middle_mouse_mute(void);
 // Layout
 gboolean config_get_use_horizontal_slider(void);
 gboolean config_get_show_sound_level(void);
-gboolean config_get_use_transparent_background(void);
 
 // Hotkeys
 gboolean config_get_hotkey_up_enabled(void);

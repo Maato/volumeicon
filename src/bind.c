@@ -151,7 +151,7 @@ grab_ungrab_with_ignorable_modifiers (GdkWindow *rootwin,
 			XGrabKey (GDK_WINDOW_XDISPLAY (rootwin),
 			          keycode,
 			          modifiers | mod_masks [i],
-			          gdk_x11_window_get_xid (rootwin),
+			          GDK_WINDOW_XID (rootwin),
 			          False,
 			          GrabModeAsync,
 			          GrabModeAsync);
@@ -159,7 +159,7 @@ grab_ungrab_with_ignorable_modifiers (GdkWindow *rootwin,
 			XUngrabKey (GDK_WINDOW_XDISPLAY (rootwin),
 			            keycode,
 			            modifiers | mod_masks [i],
-			            gdk_x11_window_get_xid (rootwin));
+			            GDK_WINDOW_XID (rootwin));
 		}
 	}
 	gdk_flush();
