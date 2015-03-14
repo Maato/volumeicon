@@ -41,6 +41,7 @@ static struct config {
     // Alsa
     gchar *card; // TODO: Rename this to device.
     gchar *channel;
+    gboolean decibel_scale;
 
     // Notifications
     gboolean show_notification;
@@ -76,6 +77,7 @@ static struct config {
     // Alsa
     .card = NULL,
     .channel = NULL,
+    .decibel_scale = FALSE,
 
     // Notifications
     .show_notification = TRUE,
@@ -151,6 +153,7 @@ static void config_read(void)
     // Alsa
     m_config.card = GET_STRING("Alsa", "card");
     m_config.channel = GET_STRING("Alsa", "channel");
+    m_config.decibel_scale = GET_BOOL("Alsa", "decibel_scale");
 
     // Notifications
     m_config.show_notification = GET_BOOL("Notification", "show_notification");
@@ -210,6 +213,11 @@ void config_set_channel(const gchar *channel)
 {
     g_free(m_config.channel);
     m_config.channel = g_strdup(channel);
+}
+
+void config_set_decibel_scale(gboolean decibel_scale)
+{
+    m_config.decibel_scale = decibel_scale;
 }
 
 // Notifications
@@ -321,6 +329,11 @@ const gchar *config_get_card(void)
 const gchar *config_get_channel(void)
 {
     return m_config.channel;
+}
+
+gboolean config_get_decibel_scale()
+{
+    return m_config.decibel_scale;
 }
 
 // Notifications
@@ -439,6 +452,7 @@ void config_write(void)
         SET_STRING("Alsa", "card", m_config.card);
     if(m_config.channel)
         SET_STRING("Alsa", "channel", m_config.channel);
+    SET_BOOL("Alsa", "decibel_scale", m_config.decibel_scale);
 
     // Notifications
     SET_BOOL("Notification", "show_notification", m_config.show_notification);
