@@ -1073,11 +1073,12 @@ static void notification_show()
 
 static void scale_setup()
 {
-	if(config_get_use_horizontal_slider())
+	if(config_get_use_horizontal_slider()) {
 		m_scale = gtk_hscale_new_with_range(0.0, 100.0, 1.0);
-	else
+	} else {
 		m_scale = gtk_vscale_new_with_range(0.0, 100.0, 1.0);
-	gtk_range_set_inverted(GTK_RANGE(m_scale), TRUE);
+		gtk_range_set_inverted(GTK_RANGE(m_scale), TRUE);
+	}
 	gtk_scale_set_draw_value(GTK_SCALE(m_scale), config_get_show_sound_level());
 
 	m_scale_window = gtk_window_new(GTK_WINDOW_POPUP);
@@ -1137,11 +1138,14 @@ int main(int argc, char * argv[])
 	GError * error = 0;
 	gchar * config_name = 0;
 	gchar * device_name = 0;
+	gboolean print_version = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
 			_("Alternate name to use for config file, default is volumeicon"), "name" },
 		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name,
 			_("Mixer device name"), "name" },
+		{ "version", 'v', 0, G_OPTION_ARG_NONE, &print_version,
+			_("Output version number and exit"), NULL },
 		{ NULL }
 	};
 	if(!gtk_init_with_args(&argc, &argv, "", options, "", &error)) {
@@ -1151,6 +1155,11 @@ int main(int argc, char * argv[])
 		return EXIT_FAILURE;
 	}
 	signal(SIGCHLD, SIG_IGN);
+
+	if(print_version) {
+		g_fprintf(stdout, "%s %s\n", APPNAME, VERSION);
+		return EXIT_SUCCESS;
+	}
 
 	// Setup OSD Notification
 	#ifdef COMPILEWITH_NOTIFY
