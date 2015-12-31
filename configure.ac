@@ -86,7 +86,7 @@ fi
 if test "x${notify}" = xyes; then
 # Check for libnotify
 PKG_CHECK_MODULES([NOTIFY], [libnotify >= 0.5.0])
-NOTIFY_CFLAGS+="-DCOMPILEWITH_NOTIFY"
+NOTIFY_CFLAGS+=" -DCOMPILEWITH_NOTIFY"
 AC_SUBST(NOTIFY_CFLAGS)
 AC_SUBST(NOTIFY_LIBS)
 fi
