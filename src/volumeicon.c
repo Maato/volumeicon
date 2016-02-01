@@ -815,6 +815,7 @@ static gboolean status_icon_on_button_press(GtkStatusIcon * status_icon,
 		backend_set_volume(m_volume);
 		backend_set_mute(m_mute);
 		status_icon_update(m_mute, FALSE);
+		notification_show();
 	}
 	else if(event->button == 2)
 	{
