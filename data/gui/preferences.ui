@@ -695,8 +695,9 @@
                                 </child>
                                 <child>
                                   <object class="GtkTreeViewColumn" id="treeviewcolumn1">
+                                    <property name="resizable">True</property>
                                     <property name="sizing">fixed</property>
-                                    <property name="fixed_width">160</property>
+                                    <property name="min_width">160</property>
                                     <property name="title">column</property>
                                     <child>
                                       <object class="GtkCellRendererText" id="cellrenderertext3"/>
