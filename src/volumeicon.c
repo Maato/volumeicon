@@ -1249,14 +1249,18 @@ int main(int argc, char * argv[])
 	gboolean print_version = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
-			_("Alternate name to use for config file, default is volumeicon"), "name" },
+			N_("Alternate name to use for config file, default is volumeicon"), "name" },
 		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name,
-			_("Mixer device name"), "name" },
+			N_("Mixer device name"), "name" },
 		{ "version", 'v', 0, G_OPTION_ARG_NONE, &print_version,
-			_("Output version number and exit"), NULL },
+			N_("Output version number and exit"), NULL },
 		{ NULL }
 	};
-	if(!gtk_init_with_args(&argc, &argv, "", options, "", &error)) {
+	GOptionContext *context = g_option_context_new (NULL);
+	g_option_context_set_translation_domain(context, GETTEXT_PACKAGE);
+	g_option_context_add_main_entries (context, options, GETTEXT_PACKAGE);
+	g_option_context_add_group (context, gtk_get_option_group (TRUE));
+	if(!g_option_context_parse (context, &argc, &argv, &error)) {
 		if(error) {
 			g_printerr("%s\n", error->message);
 		}
