@@ -63,6 +63,7 @@ struct Binding {
 	KeybinderHandler      handler;
 	void                 *user_data;
 	char                 *keystring;
+	GDestroyNotify        notify;
 	/* GDK "distilled" values */
 	guint                 keyval;
 	GdkModifierType       modifiers;
@@ -151,7 +152,7 @@ grab_ungrab_with_ignorable_modifiers (GdkWindow *rootwin,
 			XGrabKey (GDK_WINDOW_XDISPLAY (rootwin),
 			          keycode,
 			          modifiers | mod_masks [i],
-			          gdk_x11_window_get_xid (rootwin),
+			          GDK_WINDOW_XID (rootwin),
 			          False,
 			          GrabModeAsync,
 			          GrabModeAsync);
@@ -159,7 +160,7 @@ grab_ungrab_with_ignorable_modifiers (GdkWindow *rootwin,
 			XUngrabKey (GDK_WINDOW_XDISPLAY (rootwin),
 			            keycode,
 			            modifiers | mod_masks [i],
-			            gdk_x11_window_get_xid (rootwin));
+			            GDK_WINDOW_XID (rootwin));
 		}
 	}
 	gdk_flush();
@@ -189,6 +190,7 @@ grab_ungrab (GdkWindow *rootwin,
              gboolean   grab)
 {
 	int k;
+	GdkKeymap *map;
 	GdkKeymapKey *keys;
 	gint n_keys;
 	GdkModifierType add_modifiers;
@@ -199,7 +201,8 @@ grab_ungrab (GdkWindow *rootwin,
 	                 XkbAllClientInfoMask,
 	                 XkbUseCoreKbd);
 
-	gdk_keymap_get_entries_for_keyval(gdk_keymap_get_default(), keyval, &keys, &n_keys);
+	map = gdk_keymap_get_default();
+	gdk_keymap_get_entries_for_keyval(map, keyval, &keys, &n_keys);
 
 	if (n_keys == 0)
 		return FALSE;
@@ -240,7 +243,7 @@ grab_ungrab (GdkWindow *rootwin,
 
 	}
 	g_free(keys);
-	XkbFreeClientMap(xmap, 0, TRUE);
+	XkbFreeKeyboard(xmap, 0, TRUE);
 
 	return success;
 }
@@ -383,8 +386,13 @@ filter_func (GdkXEvent *gdk_xevent, GdkEvent *event, gpointer data)
 		processing_event = TRUE;
 		last_event_time = xevent->xkey.time;
 
-		for (iter = bindings; iter != NULL; iter = iter->next) {
+		iter = bindings;
+		while (iter != NULL) {
+			/* NOTE: ``iter`` might be removed from the list
+			 * in the callback.
+			 */
 			struct Binding *binding = iter->data;
+			iter = iter->next;
 
 			if (keyvalues_equal(binding->keyval, keyval) &&
 			    modifiers_equal(binding->modifiers, modifiers)) {
@@ -426,6 +434,14 @@ keymap_changed (GdkKeymap *map)
 	}
 }
 
+/**
+ * keybinder_init:
+ *
+ * Initialize the keybinder library.
+ *
+ * This function must be called after initializing GTK, before calling any
+ * other function in the library. Can only be called once.
+ */
 void
 keybinder_init ()
 {
@@ -448,10 +464,47 @@ keybinder_init ()
 			  NULL);
 }
 
+/**
+ * keybinder_bind: (skip)
+ * @keystring: an accelerator description (gtk_accelerator_parse() format)
+ * @handler:   callback function
+ * @user_data: data to pass to @handler
+ *
+ * Grab a key combination globally and register a callback to be called each
+ * time the key combination is pressed.
+ *
+ * This function is excluded from introspected bindings and is replaced by
+ * keybinder_bind_full.
+ *
+ * Returns: %TRUE if the accelerator could be grabbed
+ */
 gboolean
 keybinder_bind (const char *keystring,
                 KeybinderHandler handler,
                 void *user_data)
+{
+	return keybinder_bind_full(keystring, handler, user_data, NULL);
+}
+
+/**
+ * keybinder_bind_full: (rename-to keybinder_bind)
+ * @keystring: an accelerator description (gtk_accelerator_parse() format)
+ * @handler:   (scope notified):        callback function
+ * @user_data: (closure) (allow-none):  data to pass to @handler
+ * @notify:    (allow-none):  called when @handler is unregistered
+ *
+ * Grab a key combination globally and register a callback to be called each
+ * time the key combination is pressed.
+ *
+ * Since: 0.3.0
+ *
+ * Returns: %TRUE if the accelerator could be grabbed
+ */
+gboolean
+keybinder_bind_full (const char *keystring,
+                     KeybinderHandler handler,
+                     void *user_data,
+                     GDestroyNotify notify)
 {
 	struct Binding *binding;
 	gboolean success;
@@ -460,6 +513,7 @@ keybinder_bind (const char *keystring,
 	binding->keystring = g_strdup (keystring);
 	binding->handler = handler;
 	binding->user_data = user_data;
+	binding->notify = notify;
 
 	/* Sets the binding's keycode and modifiers */
 	success = do_grab_key (binding);
@@ -473,6 +527,16 @@ keybinder_bind (const char *keystring,
 	return success;
 }
 
+/**
+ * keybinder_unbind: (skip)
+ * @keystring: an accelerator description (gtk_accelerator_parse() format)
+ * @handler:   callback function
+ *
+ * Unregister a specific previously bound callback for this keystring.
+ *
+ * This function is excluded from introspected bindings and is replaced by
+ * keybinder_unbind_all.
+ */
 void
 keybinder_unbind (const char *keystring, KeybinderHandler handler)
 {
@@ -486,15 +550,58 @@ keybinder_unbind (const char *keystring, KeybinderHandler handler)
 			continue;
 
 		do_ungrab_key (binding);
-
 		bindings = g_slist_remove (bindings, binding);
 
+		TRACE (g_print("unbind, notify: %p\n", binding->notify));
+		if (binding->notify) {
+			binding->notify(binding->user_data);
+		}
 		g_free (binding->keystring);
 		g_free (binding);
 		break;
 	}
 }
 
+/**
+ * keybinder_unbind_all: (rename-to keybinder_unbind)
+ * @keystring: an accelerator description (gtk_accelerator_parse() format)
+ *
+ * Unregister all previously bound callbacks for this keystring.
+ *
+ * Since: 0.3.0
+ */
+void keybinder_unbind_all (const char *keystring)
+{
+	GSList *iter = bindings;
+
+	for (iter = bindings; iter != NULL; iter = iter->next) {
+		struct Binding *binding = iter->data;
+
+		if (strcmp (keystring, binding->keystring) != 0)
+			continue;
+
+		do_ungrab_key (binding);
+		bindings = g_slist_remove (bindings, binding);
+
+		TRACE (g_print("unbind_all, notify: %p\n", binding->notify));
+		if (binding->notify) {
+			binding->notify(binding->user_data);
+		}
+		g_free (binding->keystring);
+		g_free (binding);
+
+		/* re-start scan from head of new list */
+		iter = bindings;
+		if (!iter)
+			break;
+	}
+}
+
+/**
+ * keybinder_get_current_event_time:
+ *
+ * Returns: the current event timestamp
+ */
 guint32
 keybinder_get_current_event_time (void)
 {
