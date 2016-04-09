@@ -1,0 +1,103 @@
+# Serbian translations for volumeicon package.
+# Copyright (C) 2015 THE volumeicon'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the volumeicon package.
+# Dino Duratović <dinomol@mail.com>, 2015.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: volumeicon 0.5.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2012-11-05 21:30+0100\n"
+"PO-Revision-Date: 2015-06-11 18:37+0100\n"
+"Last-Translator: Dino Duratović <dinomol@mail.com>\n"
+"Language-Team: Serbian\n"
+"Language: sr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Poedit 1.8.1\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "Поставке"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Channel"
+msgstr "Канал"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Icon Theme"
+msgstr "Тема икона"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "External mixer"
+msgstr "Екстерни миксер"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "Volume adjustment"
+msgstr "Подешавање гласноће"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "<b>Status Icon</b>"
+msgstr "<b>Икона стања</b>"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Mute Volume"
+msgstr "Пригуши звук"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "Show Slider"
+msgstr "Прикажи клизач"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>Леви клик миша</b>"
+
+#: ../data/gui/preferences.ui.h:11 ../src/volumeicon.c:637
+msgid "Open Mixer"
+msgstr "Отвори миксер"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>Средњи клик миша</b>"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Use Horizontal Slider"
+msgstr "Користи хоризонтални клизач"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "Show Sound Level"
+msgstr "Прикажи ниво гласноће"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "Use Transparent Background (requires compositor)"
+msgstr "Користи провидну позадину (потребан је композитор)"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>Поставке изгледа</b>"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Пречице</b>"
+
+#: ../src/volumeicon.c:431
+msgid "Volume Up"
+msgstr "Појачај"
+
+#: ../src/volumeicon.c:434
+msgid "Volume Down"
+msgstr "Стишај"
+
+#: ../src/volumeicon.c:437
+msgid "Mute"
+msgstr "Пригуши звук"
+
+#: ../src/volumeicon.c:976
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "Алтернативно име за конфигурациони фајл, стандардно је volumeicon"
