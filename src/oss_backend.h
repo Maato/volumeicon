@@ -24,7 +24,7 @@
 #ifndef __OSS_BACKEND_H__
 #define __OSS_BACKEND_H__
 
-void oss_setup(const gchar * card, const gchar * channel,
+gboolean oss_setup(const gchar * card, const gchar * channel,
 	void (*volume_changed)(int,gboolean));
 
 void oss_set_channel(const gchar * channel);

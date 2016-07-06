@@ -77,6 +77,9 @@ enum NOTIFICATION
 #define SCALE_HIDE_DELAY 500
 #define TIMER_INTERVAL 50
 
+// Setup retry
+#define SETUP_RETRY_INTERVAL 1000
+
 //##############################################################################
 // Type definitions
 //##############################################################################
@@ -114,6 +117,8 @@ typedef struct
 //##############################################################################
 // Static variables
 //##############################################################################
+static gboolean m_backend_is_setup = FALSE;
+static gchar *m_commandline_device_name = NULL;
 #ifdef COMPILEWITH_NOTIFY
 static NotifyNotification * m_notification = NULL;
 #endif
@@ -129,7 +134,7 @@ static gboolean m_setting_scale_value = FALSE;
 static PreferencesGui * gui = NULL;
 
 // Backend Interface
-static void (*backend_setup)(const gchar * card, const gchar * channel,
+static gboolean (*backend_setup)(const gchar * card, const gchar * channel,
 	void (*volume_changed)(int,gboolean)) = NULL;
 static void (*backend_set_channel)(const gchar * channel) = NULL;
 static void (*backend_set_volume)(int volume) = NULL;
@@ -307,7 +312,7 @@ static void preferences_device_combobox_changed(GtkComboBox * widget,
 		gchar * device;
 		gtk_tree_model_get(GTK_TREE_MODEL(gui->device_store), &iter, 0,
 			&device, -1);
-		backend_setup(device, NULL, volume_icon_on_volume_changed);
+		m_backend_is_setup = backend_setup(device, NULL, volume_icon_on_volume_changed);
 		config_set_card(device);
 		config_set_channel(backend_get_channel());
 		m_volume = clamp_volume(backend_get_volume());
@@ -1234,6 +1239,23 @@ static void hotkey_handle(const char * key, void * user_data)
 	notification_show();
 }
 
+static gboolean retry_setup_cb(gpointer data)
+{
+	if(m_backend_is_setup) {
+		return FALSE;
+	}
+	m_backend_is_setup = backend_setup(m_commandline_device_name ? m_commandline_device_name : config_get_card(),
+												  config_get_channel(), volume_icon_on_volume_changed);
+	if(m_backend_is_setup) {
+		m_volume = clamp_volume(backend_get_volume());
+		m_mute = backend_get_mute();
+		status_icon_update(m_mute, FALSE);
+		return FALSE;
+	} else {
+		return TRUE;
+	}
+}
+
 //##############################################################################
 // Exported functions
 //##############################################################################
@@ -1246,12 +1268,11 @@ int main(int argc, char * argv[])
 	// Initialize gtk with arguments
 	GError * error = 0;
 	gchar * config_name = 0;
-	gchar * device_name = 0;
 	gboolean print_version = FALSE;
 	GOptionEntry options[] = {
 		{ "config", 'c', 0, G_OPTION_ARG_FILENAME, &config_name,
 			N_("Alternate name to use for config file, default is volumeicon"), "name" },
-		{ "device", 'd', 0, G_OPTION_ARG_STRING, &device_name,
+		{ "device", 'd', 0, G_OPTION_ARG_STRING, &m_commandline_device_name,
 			N_("Mixer device name"), "name" },
 		{ "version", 'v', 0, G_OPTION_ARG_NONE, &print_version,
 			N_("Output version number and exit"), NULL },
@@ -1345,15 +1366,21 @@ int main(int argc, char * argv[])
 
 	// Setup
 	config_initialize(config_name);
-	backend_setup(device_name ? device_name : config_get_card(), config_get_channel(), volume_icon_on_volume_changed);
-	m_volume = clamp_volume(backend_get_volume());
-	m_mute = backend_get_mute();
+	m_backend_is_setup = backend_setup(m_commandline_device_name ? m_commandline_device_name : config_get_card(),
+					  config_get_channel(), volume_icon_on_volume_changed);
+	if(!m_backend_is_setup) {
+		g_timeout_add(SETUP_RETRY_INTERVAL, retry_setup_cb, NULL);
+	} else {
+		m_volume = clamp_volume(backend_get_volume());
+		m_mute = backend_get_mute();
+	}
 	volume_icon_load_icons();
 	status_icon_setup(m_mute);
 	scale_setup();
     gint notification_type = config_get_notification_type();
-    if (notification_type < 0 || notification_type >= N_NOTIFICATIONS)
+    if (notification_type < 0 || notification_type >= N_NOTIFICATIONS) {
         config_set_notification_type((gint)NOTIFICATION_NATIVE);
+	 }
 
 	keybinder_init();
 	if(config_get_hotkey_up_enabled() &&

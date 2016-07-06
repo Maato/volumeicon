@@ -136,7 +136,7 @@ gboolean oss_get_mute()
 	return mute;
 }
 
-void oss_setup(const gchar * card, const gchar * channel,
+gboolean oss_setup(const gchar * card, const gchar * channel,
 	void (*volume_changed)(int,gboolean))
 {
 	// Make sure (for now) that the setup function only gets called once
@@ -181,6 +181,8 @@ void oss_setup(const gchar * card, const gchar * channel,
 		oss_set_channel(channel);
 	else if(channel == NULL && m_channel_names != NULL)
 		oss_set_channel((const gchar*)m_channel_names->data);
+
+	return TRUE;
 }
 
 void oss_set_channel(const gchar * channel)

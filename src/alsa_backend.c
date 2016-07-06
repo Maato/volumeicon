@@ -135,7 +135,7 @@ gboolean asound_get_mute()
 	return mute;
 }
 
-void asound_setup(const gchar * card, const gchar * channel,
+gboolean asound_setup(const gchar * card, const gchar * channel,
 	void (*volume_changed)(int,gboolean))
 {
 	gchar * card_override = NULL; // used to hold a string like hw:0 if a nice
@@ -168,6 +168,7 @@ void asound_setup(const gchar * card, const gchar * channel,
 	snd_ctl_card_info_t * info = NULL;
 	snd_ctl_card_info_alloca(&info);
 	m_device_names = g_list_append(m_device_names, (gpointer)g_strdup("default"));
+	gboolean encountered_provided_device = g_strcmp0("default", m_device) == 0;
 	while(ret == 0 && card_number != -1) {
 		char buf[16];
 		sprintf(buf, "hw:%d", card_number);
@@ -181,14 +182,23 @@ void asound_setup(const gchar * card, const gchar * channel,
 		}
 		snd_ctl_close(ctl);
 
+
 		gchar * nice_name = g_strdup(snd_ctl_card_info_get_name(info));
 		m_device_names = g_list_append(m_device_names, (gpointer)nice_name);
 
+		
+		if(g_strcmp0(buf, m_device) == 0) {
+			encountered_provided_device = TRUE;
+		}
 		if(g_strcmp0(nice_name, m_device) == 0) {
 			g_free(card_override);
 			card_override = g_strdup_printf("hw:%d", card_number);
+			encountered_provided_device = TRUE;
 		}
 		ret = snd_card_next(&card_number);
+	}
+	if(!encountered_provided_device) {
+		m_device_names = g_list_append(m_device_names, (gpointer)g_strdup(m_device));
 	}
 
 	// Load the mixer for the provided cardname
@@ -199,7 +209,7 @@ void asound_setup(const gchar * card, const gchar * channel,
 		snd_mixer_close(m_mixer);
 		m_mixer = NULL;
 		g_free(card_override);
-		return;
+		return FALSE;
 	} else {
 		g_free(card_override);
 	}
@@ -241,6 +251,8 @@ void asound_setup(const gchar * card, const gchar * channel,
 		asound_set_channel(channel);
 	else if(m_channel_names != NULL)
 		asound_set_channel((const gchar*)m_channel_names->data);
+
+	return TRUE;
 }
 
 void asound_set_channel(const gchar * channel)

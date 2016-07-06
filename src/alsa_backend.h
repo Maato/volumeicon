@@ -24,7 +24,7 @@
 #ifndef __ALSA_BACKEND_H__
 #define __ALSA_BACKEND_H__
 
-void asound_setup(const gchar * card, const gchar * channel,
+gboolean asound_setup(const gchar * card, const gchar * channel,
 	void (*volume_changed)(int,gboolean));
 
 void asound_set_channel(const gchar * channel);
