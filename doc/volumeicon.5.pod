@@ -120,6 +120,8 @@ Hotkey to toggle mute. The default is B<XF86AudioMute>.
 
 =back
 
+=back
+
 =head1 BUGS
 
 Submit bug reports and pull requests to L<Github|https://github.com/Maato/volumeicon>
