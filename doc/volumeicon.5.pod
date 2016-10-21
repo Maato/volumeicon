@@ -1,5 +1,7 @@
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 volumeicon - configuration file for L<volumeicon(1)>

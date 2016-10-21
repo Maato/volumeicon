@@ -1,5 +1,7 @@
 =pod
 
+=encoding utf8
+
 =head1 NAME
 
 volumeicon - A lightweight standalone volume icon indicator 
@@ -25,7 +27,7 @@ Alternate configuration file. Default is B<~/.config/volumeicon/volumeicon>. Ref
 
 Mixer device name
 
-=item B<-v --version>
+=item B<-v, --version>
 
 Output version number and exit
 
@@ -87,7 +89,7 @@ Changed volume mapping to match that of alsamixer (code from alsamixer).
 
 =item Dan Church
 
-Added `--with-default-mixerapp' configur option.
+Added `--with-default-mixerapp' configure option.
 
 =item Valère Monseur
 
