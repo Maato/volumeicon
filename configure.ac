@@ -106,6 +106,7 @@ AC_DEFINE_UNQUOTED(DEFAULT_MIXERAPP,"${DEFAULT_MIXERAPP}",[Default mixer applica
 AC_CONFIG_FILES(Makefile \
 		src/Makefile \
 		data/Makefile \
+		doc/Makefile \
 		po/Makefile.in)
 
 AC_OUTPUT
