@@ -204,7 +204,7 @@
                                       <object class="GtkRadioButton" id="logarithmic_scale_radiobutton">
                                         <property name="label" translatable="yes">Logarithmic Scale</property>
                                         <property name="visible">True</property>
-                                        <property name="group">linear_radiobutton</property>
+                                        <property name="group">linear_scale_radiobutton</property>
                                       </object>
                                       <packing>
                                         <property name="expand">True</property>
