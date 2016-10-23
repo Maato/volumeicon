@@ -53,3 +53,5 @@ configure
 src/volumeicon
 po/Makefile.in.in
 
+doc/volumeicon.1
+doc/volumeicon.5
