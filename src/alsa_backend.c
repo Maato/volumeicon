@@ -108,7 +108,7 @@ int asound_get_volume()
 	}
 
 	// Return the current volume value from [0-100]
-	if(config_get_decibel_scale())
+	if(config_get_use_logarithmic_scale())
 	{
 		long pmin, pmax, value;
 		snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);
@@ -186,7 +186,7 @@ gboolean asound_setup(const gchar * card, const gchar * channel,
 		gchar * nice_name = g_strdup(snd_ctl_card_info_get_name(info));
 		m_device_names = g_list_append(m_device_names, (gpointer)nice_name);
 
-		
+
 		if(g_strcmp0(buf, m_device) == 0) {
 			encountered_provided_device = TRUE;
 		}
@@ -307,7 +307,7 @@ void asound_set_volume(int volume)
 	}
 	volume = (volume < 0 ? 0 : (volume > 100 ? 100 : volume));
 
-	if(config_get_decibel_scale())
+	if(config_get_use_logarithmic_scale())
 	{
 		long pmin, pmax;
 		snd_mixer_selem_get_playback_volume_range(m_elem, &pmin, &pmax);

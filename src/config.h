@@ -31,7 +31,7 @@
 // Alsa
 void config_set_card(const gchar *card);
 void config_set_channel(const gchar *channel);
-void config_set_decibel_scale(gboolean decibel_scale);
+void config_set_use_logarithmic_scale(gboolean use_logarithmic_scale);
 
 // Notifications
 void config_set_show_notification(gboolean active);
@@ -69,7 +69,7 @@ void config_set_hotkey_mute(const gchar *mute);
 // Alsa
 const gchar *config_get_card(void);
 const gchar *config_get_channel(void);
-gboolean config_get_decibel_scale(void);
+gboolean config_get_use_logarithmic_scale(void);
 
 // Notifications
 gboolean config_get_show_notification(void);
