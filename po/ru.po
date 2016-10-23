@@ -34,7 +34,7 @@ msgid "Linear Scale"
 msgstr "Линейная шкала"
 
 #: data/gui/preferences.ui:205
-msgid "Decibel Scale"
+msgid "Logarithmic Scale"
 msgstr "Шкала в децибелах"
 
 #: data/gui/preferences.ui:223

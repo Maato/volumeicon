@@ -27,7 +27,8 @@ Compilation Flags
                          specified in /etc/oss.conf. If that does not exist it
                          defaults to /usr/lib/oss/include/sys.
 
---with-default-mixerapp: Set the default mixer application, defaults to alsamixer.
+--with-default-mixerapp: Set the default mixer application, defaults to
+                         alsamixer.
 ```
 
 Build Dependencies
@@ -39,3 +40,10 @@ The following packages must be installed for compilation (Debian names given):
 * libglib2.0-dev
 * libgtk-3-dev
 * perl (uses `pod2man` to generate man pages)
+
+Contributing
+------------
+In order to keep coding style consistent (barring third-party code) we use the
+`clang-format` command-line tool with the settings specified in
+`.clang-format`. To that end, please make sure to run the `format-source.sh`
+script before submitting pull requests.

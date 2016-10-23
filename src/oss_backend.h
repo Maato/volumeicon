@@ -2,7 +2,7 @@
 // volumeicon
 //
 // oss_backend.h - implements a volume control abstraction using oss
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -24,16 +24,16 @@
 #ifndef __OSS_BACKEND_H__
 #define __OSS_BACKEND_H__
 
-gboolean oss_setup(const gchar * card, const gchar * channel,
-	void (*volume_changed)(int,gboolean));
+gboolean oss_setup(const gchar *card, const gchar *channel,
+                   void (*volume_changed)(int, gboolean));
 
-void oss_set_channel(const gchar * channel);
+void oss_set_channel(const gchar *channel);
 void oss_set_volume(int volume);
 void oss_set_mute(gboolean mute);
 
 int oss_get_volume();
 gboolean oss_get_mute();
-const gchar * oss_get_channel();
-const GList * oss_get_channel_names();
+const gchar *oss_get_channel();
+const GList *oss_get_channel_names();
 
 #endif
