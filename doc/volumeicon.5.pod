@@ -28,6 +28,14 @@ This section holds alsa sound card configuration.
 
 Specify which sound card to control. The default value is B<default>.
 
+=item B<channel>
+
+Specify the channel to control. This defaults to the first channel of the selected card/device.
+
+=item B<logarithmic_scale>
+
+Use logarithmic volume scale which mimics how humans perceive changes in volume. The default value is B<false>.
+
 =back
 
 =item B<[Notification]>
