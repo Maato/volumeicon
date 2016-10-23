@@ -1,0 +1,139 @@
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+volumeicon - configuration file for L<volumeicon(1)>
+
+=head1 SYNOPSIS
+
+B<~/.config/volumeicon/volumeicon>
+
+=head1 DESCRIPTION
+
+L<volumeicon(1)> obtains configuration information from B<~/.config/volumeicon/volumeicon>. This configuration file can be overriden on runtime via B<--config> switch.
+
+The configuration syntax is similar of those .ini files.
+
+=over 4
+
+=item B<[Alsa]>
+
+This section holds alsa sound card configuration.
+
+=over 4
+
+=item B<card>
+
+Specify which sound card to control. The default value is B<default>.
+
+=back
+
+=item B<[Notification]>
+
+This section holds notification configuration.
+
+=over 4
+
+=item B<show_notification>
+
+The value can be either B<true> to enable notification or B<false> to disable notification.
+
+=item B<notification_type>
+
+The value can be either B<1> for libnotify based notification or B<0> for GTK+ popup notification.
+
+=back
+
+=item B<[StatusIcon]>
+
+This section holds status icon configuration. The configuration items are as follows.
+
+=over 4
+
+=item B<stepsize>
+
+Configure how many steps when changing volume. Takes an integer value. The default is B<5>.
+
+=item B<onclick>
+
+Configure the command executed when clicking B<volumeicon(1)> applet. The default is B<xterm -e 'alsamixer'>.
+
+=item B<theme>
+
+Icon theme to use. The default is B<tango>
+
+=item B<use_panel_specific_icons>
+
+Whether to use panel-provided icon. The default is B<false>.
+
+=item B<lmb_slider>
+
+Whether to show volume slider. The default is B<false>.
+
+=item B<mmb_mute>
+
+whether to use middle mouse button to toggle mute. The default is B<false>.
+
+=item B<use_horizontal_slider>
+
+Whether to use horizontal slider. The default is B<true>.
+
+=item B<show_sound_level>
+
+Whether to show sound level. The default is B<false>.
+
+=item B<use_transparent_background>
+
+Whether to use transparent background. The default is B<false>.
+
+=back
+
+=item B<[Hotkeys]>
+
+This section holds the hotkey configuration for volume manipulation.
+
+=over 4
+
+=item B<up_enabled>
+
+Whether to enable volume up hotkey. The default is B<false>.
+
+=item B<down_enabled>
+
+whether to enable volume down hotkey. The default is B<false>.
+
+=item B<mute_enabled>
+
+Whether to enable volume mute hotkey. The default is B<false>.
+
+=item B<up>
+
+Hotkey to increase volume. The default is B<XF86AudioRaiseVolume>.
+
+=item B<down>
+
+Hotkey to decrease volume. The default is B<XF86AudioLowerVolume>.
+
+=item B<mute>
+
+Hotkey to toggle mute. The default is B<XF86AudioMute>.
+
+=back
+
+=back
+
+=head1 BUGS
+
+Submit bug reports and pull requests to L<Github|https://github.com/Maato/volumeicon>
+
+=head1 LICENSE
+
+This program is licensed under GNU General Public License version 3. See B<COPYING> in the distribution for detailed license text.
+
+=head1 SEE ALSO
+
+L<volumeicon(1)>, L<alsamixer(1)>, L<xev(1)>
+
+=cut

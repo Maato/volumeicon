@@ -1,0 +1,118 @@
+=pod
+
+=encoding utf8
+
+=head1 NAME
+
+volumeicon - A lightweight standalone volume icon indicator 
+
+=head1 SYNOPSIS
+
+B<volumeicon --config=CONFIGFILE --device=MIXER --display=DISPLAY>
+B<volumeicon --version>
+
+=head1 DESCRIPTION
+
+This app is a standalone lightweight volume icon, desktop independent, which sits on the system tray.
+
+volumeicon accepts the following parameters.
+
+=over 4
+
+=item B<-c, --config=CONFIGFILE>
+
+Alternate configuration file. Default is B<~/.config/volumeicon/volumeicon>. Refer to L<volumeicon(5)> for configuration file information.
+
+=item B<-d, --device=MIXER>
+
+Mixer device name
+
+=item B<-v, --version>
+
+Output version number and exit
+
+=item B<--display=DISPLAY>
+
+X display to use
+
+=back
+
+=head1 BUGS
+
+Submit bug reports and pull requests to L<Github|https://github.com/Maato/volumeicon>
+
+=head1 AUTHORS
+
+=over 4
+
+=item Maato <maato@softwarebakery.com>
+
+Developer
+
+=item Niklas Koep <niklas.koep@gmail.com>
+
+Lots of fixes, and help on github.
+ 
+=item David Gidwani <david.gidwani@gmail.com>
+
+Hotkey support
+ 
+=item Mihail Szabolcs
+
+Notifications
+
+=item Matthias Frei
+
+Show notification only when hotkeys are pressed or when scrolling the icon.
+
+Make the volume slider popup downwards if no space is left above the icon.
+
+=item Jean-Pierre Demailly <demailly@fourier.ujf-grenoble.fr>
+
+Option to use a horizontal slider
+
+Option to show the numerical value of the sound level on the slider
+
+=item Matt Boyer
+
+Added support for 8-bit OSS sliders and improved configure.ac for OSS
+
+=item Gauvain Pocentek
+
+Port to GTK 3
+
+Added french translation.
+
+=item Revellian
+
+Changed volume mapping to match that of alsamixer (code from alsamixer).
+
+=item Dan Church
+
+Added `--with-default-mixerapp' configure option.
+
+=item Valère Monseur
+
+Added option for transparent slider background.
+
+Various small fixes.
+
+=item Steven Honeyman
+
+Only use gtk -panel icons if they exist.
+
+=item Mateusz Łukasik <mati75@linuxmint.pl>
+
+Polish translation
+
+=back
+
+=head1 LICENSE
+
+This program is licensed under GNU General Public License version 3. See B<COPYING> in the distribution for detailed license text.
+
+=head1 SEE ALSO
+
+L<volumeicon(5)>, L<alsamixer(1)>
+
+=cut
