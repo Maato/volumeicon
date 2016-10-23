@@ -2,7 +2,7 @@
 // volumeicon
 //
 // oss_backend.c - implements a volume control abstraction using oss
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -22,19 +22,19 @@
 //##############################################################################
 
 #include OSS_HEADER
-#include <stropts.h>
-#include <fcntl.h>
 #include <assert.h>
-#include <stdlib.h>
+#include <fcntl.h>
 #include <glib.h>
+#include <stdlib.h>
+#include <stropts.h>
 
 #include "oss_backend.h"
 
 //##############################################################################
 // Static variables
 //##############################################################################
-static char * m_channel = NULL;
-static GList * m_channel_names = NULL;
+static char *m_channel = NULL;
+static GList *m_channel_names = NULL;
 static int m_actual_maxvalue = 0;
 static int m_mixer_fd = -1;
 static oss_mixext m_ext;
@@ -63,19 +63,24 @@ static int get_raw_value()
 	Likewise, if the control's type has 8-bit precision, we map the values
 	to a 16-bit field.
 	*/
-	struct { int16_t upper; int16_t lower; } * long_value;
-	struct { int8_t upper; int8_t lower; } * short_value;
-	switch(m_ext.type)
-	{
-		case(MIXT_STEREOSLIDER16):
-		case(MIXT_MONOSLIDER16):
-			long_value = (void*)&vr.value;
-			return long_value->lower;
+	struct {
+		int16_t upper;
+		int16_t lower;
+	} * long_value;
+	struct {
+		int8_t upper;
+		int8_t lower;
+	} * short_value;
+	switch(m_ext.type) {
+	case(MIXT_STEREOSLIDER16):
+	case(MIXT_MONOSLIDER16):
+		long_value = (void *)&vr.value;
+		return long_value->lower;
 
-		case(MIXT_STEREOSLIDER):
-		case(MIXT_MONOSLIDER):
-			short_value = (void*)&vr.value;
-			return short_value->lower;
+	case(MIXT_STEREOSLIDER):
+	case(MIXT_MONOSLIDER):
+		short_value = (void *)&vr.value;
+		return short_value->lower;
 	}
 
 	return 0;
@@ -84,15 +89,9 @@ static int get_raw_value()
 //##############################################################################
 // Exported functions
 //##############################################################################
-const gchar * oss_get_channel()
-{
-	return m_channel;
-}
+const gchar *oss_get_channel() { return m_channel; }
 
-const GList * oss_get_channel_names()
-{
-	return m_channel_names;
-}
+const GList *oss_get_channel_names() { return m_channel_names; }
 
 int oss_get_volume()
 {
@@ -114,10 +113,8 @@ gboolean oss_get_mute()
 
 	// Check for mute in this group
 	m_ext.ctrl = 0;
-	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0)
-	{
-		if(m_ext.parent == parent && m_ext.type == MIXT_MUTE)
-		{
+	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0) {
+		if(m_ext.parent == parent && m_ext.type == MIXT_MUTE) {
 			oss_mixer_value vr;
 			vr.dev = m_ext.dev;
 			vr.ctrl = m_ext.ctrl;
@@ -136,8 +133,8 @@ gboolean oss_get_mute()
 	return mute;
 }
 
-gboolean oss_setup(const gchar * card, const gchar * channel,
-	void (*volume_changed)(int,gboolean))
+gboolean oss_setup(const gchar *card, const gchar *channel,
+                   void (*volume_changed)(int, gboolean))
 {
 	// Make sure (for now) that the setup function only gets called once
 	static int oss_setup_called = 0;
@@ -145,11 +142,10 @@ gboolean oss_setup(const gchar * card, const gchar * channel,
 	oss_setup_called++;
 
 	// Get ahold of the mixer device
-	char * devmixer;
-	if((devmixer=getenv("OSS_MIXERDEV")) == NULL)
+	char *devmixer;
+	if((devmixer = getenv("OSS_MIXERDEV")) == NULL)
 		devmixer = "/dev/mixer";
-	if((m_mixer_fd = open(devmixer, O_RDWR, 0)) == -1)
-	{
+	if((m_mixer_fd = open(devmixer, O_RDWR, 0)) == -1) {
 		perror(devmixer);
 		exit(1);
 	}
@@ -157,21 +153,19 @@ gboolean oss_setup(const gchar * card, const gchar * channel,
 	// Check that there is at least one mixer
 	int nmix;
 	ioctl(m_mixer_fd, SNDCTL_MIX_NRMIX, &nmix);
-	if(nmix <= 0)
-	{
+	if(nmix <= 0) {
 		perror(devmixer);
 		exit(EXIT_FAILURE);
 	}
 
-	m_ext.dev=0;
+	m_ext.dev = 0;
 	m_ext.ctrl = 0;
-	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0)
-	{
-		if(m_ext.type == MIXT_STEREOSLIDER16 || m_ext.type == MIXT_MONOSLIDER16 
-		    || m_ext.type == MIXT_STEREOSLIDER || m_ext.type == MIXT_MONOSLIDER)
-		{
+	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0) {
+		if(m_ext.type == MIXT_STEREOSLIDER16 ||
+		   m_ext.type == MIXT_MONOSLIDER16 ||
+		   m_ext.type == MIXT_STEREOSLIDER || m_ext.type == MIXT_MONOSLIDER) {
 			m_channel_names = g_list_append(m_channel_names,
-				(gpointer)g_strdup(m_ext.extname));
+			                                (gpointer)g_strdup(m_ext.extname));
 		}
 		m_ext.ctrl++;
 	}
@@ -180,12 +174,12 @@ gboolean oss_setup(const gchar * card, const gchar * channel,
 	if(channel != NULL)
 		oss_set_channel(channel);
 	else if(channel == NULL && m_channel_names != NULL)
-		oss_set_channel((const gchar*)m_channel_names->data);
+		oss_set_channel((const gchar *)m_channel_names->data);
 
 	return TRUE;
 }
 
-void oss_set_channel(const gchar * channel)
+void oss_set_channel(const gchar *channel)
 {
 	assert(channel != NULL);
 	assert(m_mixer_fd != -1);
@@ -198,12 +192,10 @@ void oss_set_channel(const gchar * channel)
 	m_channel = g_strdup(channel);
 
 	// Find channel and then return
-	m_ext.dev=0;
+	m_ext.dev = 0;
 	m_ext.ctrl = 0;
-	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0)
-	{
-		if(g_strcmp0(channel, m_ext.extname) == 0)
-		{
+	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0) {
+		if(g_strcmp0(channel, m_ext.extname) == 0) {
 			m_actual_maxvalue = m_ext.maxvalue;
 			return;
 		}
@@ -221,10 +213,8 @@ void oss_set_mute(gboolean mute)
 
 	// Check for mute in this group
 	m_ext.ctrl = 0;
-	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0)
-	{
-		if(m_ext.parent == parent && m_ext.type == MIXT_MUTE)
-		{
+	while(ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext) >= 0) {
+		if(m_ext.parent == parent && m_ext.type == MIXT_MUTE) {
 			oss_mixer_value vr;
 			vr.dev = m_ext.dev;
 			vr.ctrl = m_ext.ctrl;
@@ -242,8 +232,7 @@ void oss_set_mute(gboolean mute)
 	ioctl(m_mixer_fd, SNDCTL_MIX_EXTINFO, &m_ext);
 
 	// If no mute control was found, revert to setting the volume to zero
-	if(!mute_found && mute)
-	{
+	if(!mute_found && mute) {
 		oss_set_volume(0);
 	}
 }
@@ -258,35 +247,42 @@ void oss_set_volume(int volume)
 	vr.ctrl = m_ext.ctrl;
 	vr.timestamp = m_ext.timestamp;
 
-	struct { int16_t upper; int16_t lower; } * long_value;
-	struct { int8_t upper; int8_t lower; } * short_value;
+	struct {
+		int16_t upper;
+		int16_t lower;
+	} * long_value;
+	struct {
+		int8_t upper;
+		int8_t lower;
+	} * short_value;
 	switch(m_ext.type) {
-		case(MIXT_STEREOSLIDER16):
-		case(MIXT_MONOSLIDER16):
-			long_value = (void*)&vr.value;;
-		case(MIXT_STEREOSLIDER):
-		case(MIXT_MONOSLIDER):
-			short_value = (void*)&vr.value;;
+	case(MIXT_STEREOSLIDER16):
+	case(MIXT_MONOSLIDER16):
+		long_value = (void *)&vr.value;
+		;
+	case(MIXT_STEREOSLIDER):
+	case(MIXT_MONOSLIDER):
+		short_value = (void *)&vr.value;
+		;
 	}
 
-	switch(m_ext.type)
-	{
-		case(MIXT_STEREOSLIDER16):
-			long_value->upper = m_actual_maxvalue * volume / 100;
-			long_value->lower = m_actual_maxvalue * volume / 100;
-			break;
-		case(MIXT_MONOSLIDER16):
-			vr.value = m_actual_maxvalue * volume / 100;
-			break;
-		case(MIXT_STEREOSLIDER):
-			short_value->upper = m_actual_maxvalue * volume / 100;
-			short_value->lower = m_actual_maxvalue * volume / 100;
-			break;
-		case(MIXT_MONOSLIDER):
-			vr.value = m_actual_maxvalue * volume / 100;
-			break;
-		default:
-			return;
+	switch(m_ext.type) {
+	case(MIXT_STEREOSLIDER16):
+		long_value->upper = m_actual_maxvalue * volume / 100;
+		long_value->lower = m_actual_maxvalue * volume / 100;
+		break;
+	case(MIXT_MONOSLIDER16):
+		vr.value = m_actual_maxvalue * volume / 100;
+		break;
+	case(MIXT_STEREOSLIDER):
+		short_value->upper = m_actual_maxvalue * volume / 100;
+		short_value->lower = m_actual_maxvalue * volume / 100;
+		break;
+	case(MIXT_MONOSLIDER):
+		vr.value = m_actual_maxvalue * volume / 100;
+		break;
+	default:
+		return;
 	}
 
 	ioctl(m_mixer_fd, SNDCTL_MIX_WRITE, &vr);

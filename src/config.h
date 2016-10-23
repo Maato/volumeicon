@@ -109,4 +109,3 @@ void config_write(void);
 void config_initialize(gchar *config_name);
 
 #endif
-

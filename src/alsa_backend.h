@@ -2,7 +2,7 @@
 // volumeicon
 //
 // alsa_backend.h - implements a volume control abstraction using alsa-lib
-// 
+//
 // Copyright 2011 Maato
 //
 // Authors:
@@ -24,18 +24,18 @@
 #ifndef __ALSA_BACKEND_H__
 #define __ALSA_BACKEND_H__
 
-gboolean asound_setup(const gchar * card, const gchar * channel,
-	void (*volume_changed)(int,gboolean));
+gboolean asound_setup(const gchar *card, const gchar *channel,
+                      void (*volume_changed)(int, gboolean));
 
-void asound_set_channel(const gchar * channel);
+void asound_set_channel(const gchar *channel);
 void asound_set_volume(int volume);
 void asound_set_mute(gboolean mute);
 
 int asound_get_volume();
 gboolean asound_get_mute();
-const gchar * asound_get_channel();
-const GList * asound_get_channel_names();
-const gchar * asound_get_device();
-const GList * asound_get_device_names();
+const gchar *asound_get_channel();
+const GList *asound_get_channel_names();
+const gchar *asound_get_device();
+const GList *asound_get_device_names();
 
 #endif
