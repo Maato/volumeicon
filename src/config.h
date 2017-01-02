@@ -42,6 +42,7 @@ void config_set_stepsize(int stepsize);
 void config_set_helper(const gchar *helper);
 void config_set_theme(const gchar *theme);
 void config_set_use_panel_specific_icons(gboolean active);
+void config_set_reverse_scroll_direction(gboolean active);
 
 // Left mouse button action
 void config_set_left_mouse_slider(gboolean active);
@@ -81,6 +82,7 @@ const gchar *config_get_helper(void);
 const gchar *config_get_theme(void);
 gboolean config_get_use_gtk_theme(void);
 gboolean config_get_use_panel_specific_icons(void);
+gboolean config_get_reverse_scroll_direction(void);
 
 // Left mouse button action
 gboolean config_get_left_mouse_slider(void);

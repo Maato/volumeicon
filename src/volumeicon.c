@@ -89,6 +89,7 @@ typedef struct {
 	GtkComboBox *theme_combobox;
 	GtkListStore *theme_store;
 	GtkCheckButton *use_panel_specific_icons_checkbutton;
+	GtkCheckButton *reverse_scroll_direction_checkbutton;
 	GtkListStore *hotkey_store;
 	GtkButton *close_button;
 	GtkRadioButton *linear_scale_radiobutton;
@@ -359,6 +360,13 @@ static void preferences_use_panel_specific_icons_checkbutton_toggled(
 	status_icon_update(m_mute, TRUE);
 }
 
+static void preferences_reverse_scroll_direction_checkbutton_toggled(
+    GtkCheckButton *widget, gpointer user_data)
+{
+	config_set_reverse_scroll_direction(
+	    gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(widget)));
+}
+
 static void
 preferences_hotkey_toggle_toggled(GtkCellRendererToggle *cell_renderer,
                                   gchar *path, gpointer user_data)
@@ -507,6 +515,8 @@ static void menu_preferences_on_activate(GtkMenuItem *menuitem,
 	gui->theme_store = GTK_LIST_STORE(getobj("theme_name_model"));
 	gui->use_panel_specific_icons_checkbutton =
 	    GTK_CHECK_BUTTON(getobj("use_panel_specific_icons_checkbutton"));
+	gui->reverse_scroll_direction_checkbutton =
+	    GTK_CHECK_BUTTON(getobj("reverse_scroll_direction_checkbutton"));
 	gui->hotkey_store = GTK_LIST_STORE(getobj("hotkey_binding_model"));
 	gui->close_button = GTK_BUTTON(getobj("close_button"));
 	gui->linear_scale_radiobutton =
@@ -645,6 +655,9 @@ static void menu_preferences_on_activate(GtkMenuItem *menuitem,
 	gtk_entry_set_text(gui->mixer_entry, config_get_helper());
 	gtk_adjustment_set_value(gui->volume_adjustment,
 	                         (gdouble)config_get_stepsize());
+	gtk_toggle_button_set_active(
+	    GTK_TOGGLE_BUTTON(gui->reverse_scroll_direction_checkbutton),
+	    config_get_reverse_scroll_direction());
 
 	// Connect signals
 	g_signal_connect(G_OBJECT(gui->window), "destroy",
@@ -666,6 +679,10 @@ static void menu_preferences_on_activate(GtkMenuItem *menuitem,
 	g_signal_connect(
 	    G_OBJECT(gui->use_panel_specific_icons_checkbutton), "toggled",
 	    G_CALLBACK(preferences_use_panel_specific_icons_checkbutton_toggled),
+	    NULL);
+	g_signal_connect(
+	    G_OBJECT(gui->reverse_scroll_direction_checkbutton), "toggled",
+	    G_CALLBACK(preferences_reverse_scroll_direction_checkbutton_toggled),
 	    NULL);
 	g_signal_connect(
 	    G_OBJECT(gui->logarithmic_scale_radiobutton), "toggled",
@@ -843,14 +860,20 @@ static void status_icon_on_scroll_event(GtkStatusIcon *status_icon,
                                         GdkEventScroll *event,
                                         gpointer user_data)
 {
+	int stepsize = config_get_stepsize();
+
+	if(config_get_reverse_scroll_direction()) {
+		stepsize = -stepsize;
+	}
+
 	switch(event->direction) {
 	case(GDK_SCROLL_UP):
 	case(GDK_SCROLL_RIGHT):
-		m_volume = clamp_volume(m_volume + config_get_stepsize());
+		m_volume = clamp_volume(m_volume + stepsize);
 		break;
 	case(GDK_SCROLL_DOWN):
 	case(GDK_SCROLL_LEFT):
-		m_volume = clamp_volume(m_volume - config_get_stepsize());
+		m_volume = clamp_volume(m_volume - stepsize);
 		break;
 	default:
 		break;
