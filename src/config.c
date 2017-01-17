@@ -52,6 +52,7 @@ static struct config {
 	gchar *helper_program;
 	gchar *theme;
 	gboolean use_panel_specific_icons;
+	gboolean reverse_scroll_direction;
 
 	// Left mouse button action
 	gboolean lmb_slider;
@@ -87,6 +88,7 @@ static struct config {
               .helper_program = NULL,
               .theme = NULL,
               .use_panel_specific_icons = FALSE,
+              .reverse_scroll_direction = FALSE,
 
               // Left mouse button action
               .lmb_slider = FALSE,
@@ -163,6 +165,8 @@ static void config_read(void)
 	m_config.theme = GET_STRING("StatusIcon", "theme");
 	m_config.use_panel_specific_icons =
 	    GET_BOOL("StatusIcon", "use_panel_specific_icons");
+	m_config.reverse_scroll_direction =
+	    GET_BOOL("StatusIcon", "reverse_scroll_direction");
 
 	// Left mouse button action
 	m_config.lmb_slider = GET_BOOL("StatusIcon", "lmb_slider");
@@ -247,6 +251,11 @@ void config_set_theme(const gchar *theme)
 void config_set_use_panel_specific_icons(gboolean active)
 {
 	m_config.use_panel_specific_icons = active;
+}
+
+void config_set_reverse_scroll_direction(gboolean active)
+{
+	m_config.reverse_scroll_direction = active;
 }
 
 // Left mouse button action
@@ -350,6 +359,11 @@ gboolean config_get_use_panel_specific_icons(void)
 	return m_config.use_panel_specific_icons;
 }
 
+gboolean config_get_reverse_scroll_direction(void)
+{
+	return m_config.reverse_scroll_direction;
+}
+
 // Left mouse button action
 gboolean config_get_left_mouse_slider(void) { return m_config.lmb_slider; }
 
@@ -428,6 +442,8 @@ void config_write(void)
 		SET_STRING("StatusIcon", "theme", m_config.theme);
 	SET_BOOL("StatusIcon", "use_panel_specific_icons",
 	         m_config.use_panel_specific_icons);
+	SET_BOOL("StatusIcon", "reverse_scroll_direction",
+	         m_config.reverse_scroll_direction);
 
 	// Left mouse button action
 	SET_BOOL("StatusIcon", "lmb_slider", m_config.lmb_slider);
