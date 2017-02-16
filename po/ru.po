@@ -3,12 +3,11 @@
 # This file is distributed under the same license as the volumeicon package.
 # Alexander Lavrukov <alexander.lavrukov@gmail.com>, 2016.
 #
-
 msgid ""
 msgstr ""
 "Project-Id-Version: volumeicon 0.5.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-12 01:42+0500\n"
+"POT-Creation-Date: 2017-02-16 18:28+0100\n"
 "PO-Revision-Date: \n"
 "Last-Translator: Alexander Lavrukov <alexander.lavrukov@gmail.com>\n"
 "Language-Team: Russian\n"
@@ -17,146 +16,151 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: data/gui/preferences.ui:51
+#: ../data/gui/preferences.ui.h:1
 msgid "Preferences"
 msgstr "Настройки"
 
-#: data/gui/preferences.ui:113
+#: ../data/gui/preferences.ui.h:2
 msgid "Device"
 msgstr "Устройство"
 
-#: data/gui/preferences.ui:157
+#: ../data/gui/preferences.ui.h:3
 msgid "Channel"
 msgstr "Канал"
 
-#: data/gui/preferences.ui:194
+#: ../data/gui/preferences.ui.h:4
 msgid "Linear Scale"
 msgstr "Линейная шкала"
 
-#: data/gui/preferences.ui:205
+#: ../data/gui/preferences.ui.h:5
 msgid "Logarithmic Scale"
 msgstr "Шкала в децибелах"
 
-#: data/gui/preferences.ui:223
+#: ../data/gui/preferences.ui.h:6
 msgid "<b>Alsa</b>"
 msgstr "<b>Alsa</b>"
 
-#: data/gui/preferences.ui:242
+#: ../data/gui/preferences.ui.h:7
 msgid "Channels"
 msgstr "Каналы"
 
-#: data/gui/preferences.ui:291
+#: ../data/gui/preferences.ui.h:8
 msgid "Icon Theme"
 msgstr "Тема иконок"
 
-#: data/gui/preferences.ui:303
+#: ../data/gui/preferences.ui.h:9
 msgid "External mixer"
 msgstr "Внешний миксер"
 
-#: data/gui/preferences.ui:316
+#: ../data/gui/preferences.ui.h:10
 msgid "Volume adjustment"
 msgstr "Шаг изменения громкости"
 
-#: data/gui/preferences.ui:325
+#: ../data/gui/preferences.ui.h:11
 msgid "0"
 msgstr "0"
 
-#: data/gui/preferences.ui:379
+#: ../data/gui/preferences.ui.h:12
 msgid "Use panel-specific icons if available"
 msgstr "Использовать иконки панели (если возможно)"
 
-#: data/gui/preferences.ui:400
+#: ../data/gui/preferences.ui.h:13
+msgid "Reverse scroll direction for volume adjustment"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:14
 msgid "<b>Status Icon</b>"
 msgstr "<b>Трей</b>"
 
-#: data/gui/preferences.ui:428 data/gui/preferences.ui:514
+#: ../data/gui/preferences.ui.h:15
 msgid "Mute Volume"
 msgstr "Выключить звук"
 
-#: data/gui/preferences.ui:445
+#: ../data/gui/preferences.ui.h:16
 msgid "Show Slider"
 msgstr "Показать ползунок"
 
-#: data/gui/preferences.ui:469
+#: ../data/gui/preferences.ui.h:17
 msgid "<b>Left Mouse Button Action</b>"
 msgstr "<b>Действие левой кнопки мыши</b>"
 
-#: data/gui/preferences.ui:497 src/volumeicon.c:864
+#: ../data/gui/preferences.ui.h:18 ../src/volumeicon.c:899
 msgid "Open Mixer"
 msgstr "Открыть миксер"
 
-#: data/gui/preferences.ui:537
+#: ../data/gui/preferences.ui.h:19
 msgid "<b>Middle Mouse Button Action</b>"
 msgstr "<b>Действие средней кнопки мыши</b>"
 
-#: data/gui/preferences.ui:565
+#: ../data/gui/preferences.ui.h:20
 msgid "Use Horizontal Slider"
 msgstr "Использовать горизонтальный ползунок"
 
-#: data/gui/preferences.ui:582
+#: ../data/gui/preferences.ui.h:21
 msgid "Show Sound Level"
 msgstr "Показывать уровень громкости"
 
-#: data/gui/preferences.ui:599
+#: ../data/gui/preferences.ui.h:22
 msgid "Use Transparent Background (requires compositor)"
 msgstr "Использовать прозрачный фон (Необходим композитный менеджер)"
 
-#: data/gui/preferences.ui:622
+#: ../data/gui/preferences.ui.h:23
 msgid "<b>Layout Preferences</b>"
 msgstr "<b>Настройки расположения</b>"
 
-#: data/gui/preferences.ui:644
+#: ../data/gui/preferences.ui.h:24
 msgid "Status Icon"
 msgstr "Трей"
 
-#: data/gui/preferences.ui:731
+#: ../data/gui/preferences.ui.h:25
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Горячие клавиши</b>"
 
-#: data/gui/preferences.ui:746
+#: ../data/gui/preferences.ui.h:26
 msgid "Hotkeys"
 msgstr "Горячие клавиши"
 
-#: data/gui/preferences.ui:785
+#: ../data/gui/preferences.ui.h:27
 msgid "Show Notifications"
 msgstr "Показывать уведомления"
 
-#: data/gui/preferences.ui:825
+#: ../data/gui/preferences.ui.h:28
 msgid "<b>On-Screen Notifications</b>"
 msgstr "<b>Уведомления на экране</b>"
 
-#: data/gui/preferences.ui:847
+#: ../data/gui/preferences.ui.h:29
 msgid "OSD"
 msgstr "OSD"
 
-#: src/volumeicon.c:606
+#: ../src/volumeicon.c:625
 msgid "Volume Up"
 msgstr "Повысить громкость"
 
-#: src/volumeicon.c:609
+#: ../src/volumeicon.c:629
 msgid "Volume Down"
 msgstr "Уменьшить громкость"
 
-#: src/volumeicon.c:612
+#: ../src/volumeicon.c:633
 msgid "Mute"
 msgstr "Выключить звук"
 
-#: src/volumeicon.c:618
+#: ../src/volumeicon.c:640
 msgid "GTK+ Popup Window"
 msgstr "Всплывающее окно GTK+"
 
-#: src/volumeicon.c:623
+#: ../src/volumeicon.c:644
 msgid "libnotify"
 msgstr "libnotify"
 
-#: src/volumeicon.c:1252
+#: ../src/volumeicon.c:1313
 msgid "Alternate name to use for config file, default is volumeicon"
-msgstr "Альтернативное имя для конфигурационного файла, по умолчанию: volumeicon"
+msgstr ""
+"Альтернативное имя для конфигурационного файла, по умолчанию: volumeicon"
 
-#: src/volumeicon.c:1254
+#: ../src/volumeicon.c:1316
 msgid "Mixer device name"
 msgstr "Название устройства миксера"
 
-#: src/volumeicon.c:1256
+#: ../src/volumeicon.c:1318
 msgid "Output version number and exit"
 msgstr "Вывести номер версии и выйти"
