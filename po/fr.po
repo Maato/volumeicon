@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: volumeicon 0.4.6\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-11-05 21:30+0100\n"
+"POT-Creation-Date: 2017-02-16 18:28+0100\n"
 "PO-Revision-Date: 2012-04-29 10:06+0200\n"
 "Last-Translator: Gauvain Pocentek <gauvain@pocentek.net>\n"
 "Language-Team: French\n"
@@ -22,81 +22,148 @@ msgid "Preferences"
 msgstr "Préférences"
 
 #: ../data/gui/preferences.ui.h:2
+msgid "Device"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:3
 msgid "Channel"
 msgstr "Canal"
 
-#: ../data/gui/preferences.ui.h:3
+#: ../data/gui/preferences.ui.h:4
+msgid "Linear Scale"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:5
+msgid "Logarithmic Scale"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:6
 msgid "<b>Alsa</b>"
 msgstr "<b>Alsa</b>"
 
-#: ../data/gui/preferences.ui.h:4
+#: ../data/gui/preferences.ui.h:7
+#, fuzzy
+msgid "Channels"
+msgstr "Canal"
+
+#: ../data/gui/preferences.ui.h:8
 msgid "Icon Theme"
 msgstr "Thème d'icônes"
 
-#: ../data/gui/preferences.ui.h:5
+#: ../data/gui/preferences.ui.h:9
 msgid "External mixer"
 msgstr "Mixeur externe"
 
-#: ../data/gui/preferences.ui.h:6
+#: ../data/gui/preferences.ui.h:10
 msgid "Volume adjustment"
 msgstr "Ajustement du volume"
 
-#: ../data/gui/preferences.ui.h:7
+#: ../data/gui/preferences.ui.h:11
+msgid "0"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:12
+msgid "Use panel-specific icons if available"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Reverse scroll direction for volume adjustment"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:14
 msgid "<b>Status Icon</b>"
 msgstr "<b>Icône de status</b>"
 
-#: ../data/gui/preferences.ui.h:8
+#: ../data/gui/preferences.ui.h:15
 msgid "Mute Volume"
 msgstr "Sourdine"
 
-#: ../data/gui/preferences.ui.h:9
+#: ../data/gui/preferences.ui.h:16
 msgid "Show Slider"
 msgstr "Afficher le curseur"
 
-#: ../data/gui/preferences.ui.h:10
+#: ../data/gui/preferences.ui.h:17
 msgid "<b>Left Mouse Button Action</b>"
 msgstr "<b>Bouton gauche de la souris</b>"
 
-#: ../data/gui/preferences.ui.h:11 ../src/volumeicon.c:637
+#: ../data/gui/preferences.ui.h:18 ../src/volumeicon.c:899
 msgid "Open Mixer"
 msgstr "Ouvrir le mixeur"
 
-#: ../data/gui/preferences.ui.h:12
+#: ../data/gui/preferences.ui.h:19
 msgid "<b>Middle Mouse Button Action</b>"
 msgstr "<b>Bouton du milieu de la souris</b>"
 
-#: ../data/gui/preferences.ui.h:13
+#: ../data/gui/preferences.ui.h:20
 msgid "Use Horizontal Slider"
 msgstr "Utiliser un curseur horizontal"
 
-#: ../data/gui/preferences.ui.h:14
+#: ../data/gui/preferences.ui.h:21
 msgid "Show Sound Level"
 msgstr "Afficher le niveau sonore"
 
-#: ../data/gui/preferences.ui.h:15
+#: ../data/gui/preferences.ui.h:22
 msgid "Use Transparent Background (requires compositor)"
 msgstr "Utiliser un fond transparent (compositeur requis)"
 
-#: ../data/gui/preferences.ui.h:16
+#: ../data/gui/preferences.ui.h:23
 msgid "<b>Layout Preferences</b>"
 msgstr "<b>Préférences d'affichage</b>"
 
-#: ../data/gui/preferences.ui.h:17
+#: ../data/gui/preferences.ui.h:24
+#, fuzzy
+msgid "Status Icon"
+msgstr "<b>Icône de status</b>"
+
+#: ../data/gui/preferences.ui.h:25
 msgid "<b>Hotkeys</b>"
 msgstr "<b>Touches</b>"
 
-#: ../src/volumeicon.c:431
+#: ../data/gui/preferences.ui.h:26
+#, fuzzy
+msgid "Hotkeys"
+msgstr "<b>Touches</b>"
+
+#: ../data/gui/preferences.ui.h:27
+msgid "Show Notifications"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:28
+msgid "<b>On-Screen Notifications</b>"
+msgstr ""
+
+#: ../data/gui/preferences.ui.h:29
+msgid "OSD"
+msgstr ""
+
+#: ../src/volumeicon.c:625
 msgid "Volume Up"
 msgstr "Plus fort"
 
-#: ../src/volumeicon.c:434
+#: ../src/volumeicon.c:629
 msgid "Volume Down"
 msgstr "Moins fort"
 
-#: ../src/volumeicon.c:437
+#: ../src/volumeicon.c:633
 msgid "Mute"
 msgstr "Sourdine"
 
-#: ../src/volumeicon.c:976
+#: ../src/volumeicon.c:640
+msgid "GTK+ Popup Window"
+msgstr ""
+
+#: ../src/volumeicon.c:644
+msgid "libnotify"
+msgstr ""
+
+#: ../src/volumeicon.c:1313
 msgid "Alternate name to use for config file, default is volumeicon"
 msgstr "Nom alternatif du fichier de configuration, le défaut est volumeicon"
+
+#: ../src/volumeicon.c:1316
+msgid "Mixer device name"
+msgstr ""
+
+#: ../src/volumeicon.c:1318
+msgid "Output version number and exit"
+msgstr ""
