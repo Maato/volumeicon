@@ -16,7 +16,7 @@ msgstr ""
 "X-Generator: Poedit 1.8.11\n"
 "Last-Translator: Mahyuddin <yudi.al@gmail.com>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Language: id_ID\n"
+"Language: id\n"
 
 #: ../data/gui/preferences.ui.h:1
 msgid "Preferences"
