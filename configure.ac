@@ -93,7 +93,8 @@ fi
 
 AC_SUBST(OSS_CFLAGS)
 
-AM_CONDITIONAL(ENABLE_OSS, test "$oss" = "yes")
+AM_CONDITIONAL(ENABLE_OSS4, test "x${oss}" = xyes -o "x${oss}" = xv4)
+AM_CONDITIONAL(ENABLE_OSS3, test "x${oss}" = xv3)
 
 DEFAULT_MIXERAPP="xterm -e 'alsamixer'"
 AC_ARG_WITH(default-mixerapp,
