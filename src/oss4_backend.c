@@ -290,3 +290,13 @@ void oss_set_volume(int volume)
 	if(volume == 100)
 		m_actual_maxvalue = get_raw_value();
 }
+
+const gchar * oss_get_device()
+{
+	return NULL;
+}
+
+const GList * oss_get_device_names()
+{
+	return NULL;
+}

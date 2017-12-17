@@ -5,10 +5,14 @@ LIBS = @GTK_LIBS@ @ALSA_LIBS@ @X11_LIBS@ @NOTIFY_LIBS@ -lm
 
 bin_PROGRAMS = volumeicon
 
-if ENABLE_OSS
-BACKEND = oss_backend.c oss_backend.h
+if ENABLE_OSS4
+BACKEND = oss4_backend.c oss_backend.h
+else
+if ENABLE_OSS3
+BACKEND = oss3_backend.c oss_backend.h
 else
 BACKEND = alsa_backend.c alsa_backend.h alsa_volume_mapping.h alsa_volume_mapping.c
+endif
 endif
 
 volumeicon_SOURCES = \
