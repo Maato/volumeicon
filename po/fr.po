@@ -23,7 +23,7 @@ msgstr "Préférences"
 
 #: ../data/gui/preferences.ui.h:2
 msgid "Device"
-msgstr ""
+msgstr "Périphérique"
 
 #: ../data/gui/preferences.ui.h:3
 msgid "Channel"
@@ -31,11 +31,11 @@ msgstr "Canal"
 
 #: ../data/gui/preferences.ui.h:4
 msgid "Linear Scale"
-msgstr ""
+msgstr "Echelle linéaire"
 
 #: ../data/gui/preferences.ui.h:5
 msgid "Logarithmic Scale"
-msgstr ""
+msgstr "Echelle logarithmique"
 
 #: ../data/gui/preferences.ui.h:6
 msgid "<b>Alsa</b>"
@@ -60,15 +60,15 @@ msgstr "Ajustement du volume"
 
 #: ../data/gui/preferences.ui.h:11
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: ../data/gui/preferences.ui.h:12
 msgid "Use panel-specific icons if available"
-msgstr ""
+msgstr "Utiliser les icônes spécifiques aux panneaux si posssible"
 
 #: ../data/gui/preferences.ui.h:13
 msgid "Reverse scroll direction for volume adjustment"
-msgstr ""
+msgstr "Sens de défilement inverse pour le réglage du volume"
 
 #: ../data/gui/preferences.ui.h:14
 msgid "<b>Status Icon</b>"
@@ -126,15 +126,15 @@ msgstr "<b>Touches</b>"
 
 #: ../data/gui/preferences.ui.h:27
 msgid "Show Notifications"
-msgstr ""
+msgstr "Afficher les notifications"
 
 #: ../data/gui/preferences.ui.h:28
 msgid "<b>On-Screen Notifications</b>"
-msgstr ""
+msgstr "<b>Notifications à l'écran</b>"
 
 #: ../data/gui/preferences.ui.h:29
 msgid "OSD"
-msgstr ""
+msgstr "Affichage à l'écran"
 
 #: ../src/volumeicon.c:625
 msgid "Volume Up"
@@ -150,7 +150,7 @@ msgstr "Sourdine"
 
 #: ../src/volumeicon.c:640
 msgid "GTK+ Popup Window"
-msgstr ""
+msgstr "Fenêtre Popup GTK+"
 
 #: ../src/volumeicon.c:644
 msgid "libnotify"
@@ -162,8 +162,8 @@ msgstr "Nom alternatif du fichier de configuration, le défaut est volumeicon"
 
 #: ../src/volumeicon.c:1316
 msgid "Mixer device name"
-msgstr ""
+msgstr "Nom du périphérique de mixage"
 
 #: ../src/volumeicon.c:1318
 msgid "Output version number and exit"
-msgstr ""
+msgstr "Afficher le numéro de version et quitter"
