@@ -1,0 +1,167 @@
+# Ukrainian translations for volumeicon package.
+# Copyright (C) 2020 THE volumeicon'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the volumeicon package.
+# Sergiy Stupar <owner@sestolab.pp.ua>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-16 18:28+0100\n"
+"PO-Revision-Date: 2020-02-13 23:51+0200\n"
+"Language-Team: Ukrainian\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.0.6\n"
+"Last-Translator: Sergiy Stupar <owner@sestolab.pp.ua>\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"Language: uk\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "Параметри"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Device"
+msgstr "Пристрій"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "Channel"
+msgstr "Канал"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Linear Scale"
+msgstr "Лінійна шкала"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "Logarithmic Scale"
+msgstr "Логарифмічна шкала"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "Channels"
+msgstr "Канали"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Icon Theme"
+msgstr "Тема іконки"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "External mixer"
+msgstr "Зовнішній мікшер"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "Volume adjustment"
+msgstr "Регулювання гучності"
+
+#: ../data/gui/preferences.ui.h:11
+msgid "0"
+msgstr "0"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "Use panel-specific icons if available"
+msgstr "Використовувати значки панелі, якщо вони доступні"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Reverse scroll direction for volume adjustment"
+msgstr "Змінити напрямок прокрутки для регулювання гучності"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "<b>Status Icon</b>"
+msgstr "<b>Іконка статусу</b>"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "Mute Volume"
+msgstr "Вимкнути звук"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "Show Slider"
+msgstr "Показати повзунок"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>Дія лівої кнопки миші</b>"
+
+#: ../data/gui/preferences.ui.h:18 ../src/volumeicon.c:899
+msgid "Open Mixer"
+msgstr "Відкрити мікшер"
+
+#: ../data/gui/preferences.ui.h:19
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>Дія середньої кнопки миші</b>"
+
+#: ../data/gui/preferences.ui.h:20
+msgid "Use Horizontal Slider"
+msgstr "Використовувати горизонтальний повзунок"
+
+#: ../data/gui/preferences.ui.h:21
+msgid "Show Sound Level"
+msgstr "Показувати рівень звуку"
+
+#: ../data/gui/preferences.ui.h:22
+msgid "Use Transparent Background (requires compositor)"
+msgstr "Використовувати прозорий фон (потрібен композитор)"
+
+#: ../data/gui/preferences.ui.h:23
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>Налаштування макета</b>"
+
+#: ../data/gui/preferences.ui.h:24
+msgid "Status Icon"
+msgstr "Іконка статусу"
+
+#: ../data/gui/preferences.ui.h:25
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Гарячі клавіші</b>"
+
+#: ../data/gui/preferences.ui.h:26
+msgid "Hotkeys"
+msgstr "Гарячі клавіші"
+
+#: ../data/gui/preferences.ui.h:27
+msgid "Show Notifications"
+msgstr "Показувати сповіщення"
+
+#: ../data/gui/preferences.ui.h:28
+msgid "<b>On-Screen Notifications</b>"
+msgstr "<b>Екранні сповіщення</b>"
+
+#: ../data/gui/preferences.ui.h:29
+msgid "OSD"
+msgstr "OSD"
+
+#: ../src/volumeicon.c:625
+msgid "Volume Up"
+msgstr "Збільшити гучність"
+
+#: ../src/volumeicon.c:629
+msgid "Volume Down"
+msgstr "Зменшити гучність"
+
+#: ../src/volumeicon.c:633
+msgid "Mute"
+msgstr "Вимкнути звук"
+
+#: ../src/volumeicon.c:640
+msgid "GTK+ Popup Window"
+msgstr "Спливаюче вікно  GTK+"
+
+#: ../src/volumeicon.c:644
+msgid "libnotify"
+msgstr "libnotify"
+
+#: ../src/volumeicon.c:1313
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "Альтернативна назва файлу конфігурації, за замовчуванням - volumeicon"
+
+#: ../src/volumeicon.c:1316
+msgid "Mixer device name"
+msgstr "Назва пристрою мікшера"
+
+#: ../src/volumeicon.c:1318
+msgid "Output version number and exit"
+msgstr "Вивести номер версії і вийти"
