@@ -2,14 +2,15 @@
 # Copyright (C) 2012 THE volumeicon'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the volumeicon package.
 # Gauvain Pocentek <gauvain@pocentek.net>, 2012.
+# Sylvain CANOINE <sylvain.canoine@laposte.net>, 2020.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: volumeicon 0.4.6\n"
+"Project-Id-Version: volumeicon 0.5.1\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2017-02-16 18:28+0100\n"
-"PO-Revision-Date: 2012-04-29 10:06+0200\n"
-"Last-Translator: Gauvain Pocentek <gauvain@pocentek.net>\n"
+"PO-Revision-Date: 2020-03-24 11:06+0200\n"
+"Last-Translator: Sylvain CANOINE <sylvain.canoine@laposte.net>\n"
 "Language-Team: French\n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
@@ -23,7 +24,7 @@ msgstr "Préférences"
 
 #: ../data/gui/preferences.ui.h:2
 msgid "Device"
-msgstr ""
+msgstr "Périphérique"
 
 #: ../data/gui/preferences.ui.h:3
 msgid "Channel"
@@ -31,11 +32,11 @@ msgstr "Canal"
 
 #: ../data/gui/preferences.ui.h:4
 msgid "Linear Scale"
-msgstr ""
+msgstr "Échelle linéaire"
 
 #: ../data/gui/preferences.ui.h:5
 msgid "Logarithmic Scale"
-msgstr ""
+msgstr "Échelle logarithmique"
 
 #: ../data/gui/preferences.ui.h:6
 msgid "<b>Alsa</b>"
@@ -56,23 +57,23 @@ msgstr "Mixeur externe"
 
 #: ../data/gui/preferences.ui.h:10
 msgid "Volume adjustment"
-msgstr "Ajustement du volume"
+msgstr "Réglage du volume"
 
 #: ../data/gui/preferences.ui.h:11
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: ../data/gui/preferences.ui.h:12
 msgid "Use panel-specific icons if available"
-msgstr ""
+msgstr "Utiliser les icônes du thème si elles existent"
 
 #: ../data/gui/preferences.ui.h:13
 msgid "Reverse scroll direction for volume adjustment"
-msgstr ""
+msgstr "Inverser le sens de défilement de la molette pour le réglage du volume"
 
 #: ../data/gui/preferences.ui.h:14
 msgid "<b>Status Icon</b>"
-msgstr "<b>Icône de status</b>"
+msgstr "<b>Icône de notification</b>"
 
 #: ../data/gui/preferences.ui.h:15
 msgid "Mute Volume"
@@ -113,28 +114,28 @@ msgstr "<b>Préférences d'affichage</b>"
 #: ../data/gui/preferences.ui.h:24
 #, fuzzy
 msgid "Status Icon"
-msgstr "<b>Icône de status</b>"
+msgstr "<b>Icône de notification</b>"
 
 #: ../data/gui/preferences.ui.h:25
 msgid "<b>Hotkeys</b>"
-msgstr "<b>Touches</b>"
+msgstr "<b>Raccourcis</b>"
 
 #: ../data/gui/preferences.ui.h:26
 #, fuzzy
 msgid "Hotkeys"
-msgstr "<b>Touches</b>"
+msgstr "<b>Raccourcis</b>"
 
 #: ../data/gui/preferences.ui.h:27
 msgid "Show Notifications"
-msgstr ""
+msgstr "Montrer les notifications"
 
 #: ../data/gui/preferences.ui.h:28
 msgid "<b>On-Screen Notifications</b>"
-msgstr ""
+msgstr "Vignettes de notification"
 
 #: ../data/gui/preferences.ui.h:29
 msgid "OSD"
-msgstr ""
+msgstr "Vignettes"
 
 #: ../src/volumeicon.c:625
 msgid "Volume Up"
@@ -150,11 +151,11 @@ msgstr "Sourdine"
 
 #: ../src/volumeicon.c:640
 msgid "GTK+ Popup Window"
-msgstr ""
+msgstr "Vignette GTK+"
 
 #: ../src/volumeicon.c:644
 msgid "libnotify"
-msgstr ""
+msgstr "libnotify"
 
 #: ../src/volumeicon.c:1313
 msgid "Alternate name to use for config file, default is volumeicon"
@@ -162,8 +163,8 @@ msgstr "Nom alternatif du fichier de configuration, le défaut est volumeicon"
 
 #: ../src/volumeicon.c:1316
 msgid "Mixer device name"
-msgstr ""
+msgstr "Périphérique de mixage"
 
 #: ../src/volumeicon.c:1318
 msgid "Output version number and exit"
-msgstr ""
+msgstr "Afficher la version et sortir"
