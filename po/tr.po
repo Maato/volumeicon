@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-16 18:28+0100\n"
+"PO-Revision-Date: 2021-06-08 19:00+0300\n"
+"Last-Translator: Cihan Alkan <cihanalk@gmail.com>\n"
+"Language-Team: Aylinux <aylinux.org>\n"
+"Language: tr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 3.0\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "Tercihler"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Device"
+msgstr "Aygıt"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "Channel"
+msgstr "Kanal"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Linear Scale"
+msgstr "Doğrusal ölçek"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "Logarithmic Scale"
+msgstr "Logaritmik ölçek"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "Channels"
+msgstr "Kanallar"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Icon Theme"
+msgstr "Simge Teması"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "External mixer"
+msgstr "Harici karıştırıcı"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "Volume adjustment"
+msgstr "Ses ayarı"
+
+#: ../data/gui/preferences.ui.h:11
+msgid "0"
+msgstr "0"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "Use panel-specific icons if available"
+msgstr "Varsa panele özel simgeleri kullanın"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Reverse scroll direction for volume adjustment"
+msgstr "Ses ayarı için ters kaydırma yönü"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "<b>Status Icon</b>"
+msgstr "<b>Durum Simgesi</b>"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "Mute Volume"
+msgstr "Sesi Kapat"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "Show Slider"
+msgstr "Kaydırıcıyı Göster"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>Sol Fare Düğmesi İşlemi</b>"
+
+#: ../data/gui/preferences.ui.h:18 ../src/volumeicon.c:899
+msgid "Open Mixer"
+msgstr "Karıştırıcı Açık"
+
+#: ../data/gui/preferences.ui.h:19
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>Orta Fare Düğmesi İşlemi</b>"
+
+#: ../data/gui/preferences.ui.h:20
+msgid "Use Horizontal Slider"
+msgstr "Yatay Kaydırıcıyı Kullan"
+
+#: ../data/gui/preferences.ui.h:21
+msgid "Show Sound Level"
+msgstr "Ses Seviyesini Göster"
+
+#: ../data/gui/preferences.ui.h:22
+msgid "Use Transparent Background (requires compositor)"
+msgstr "Saydam Arka Planı Kullan (besteci gerektirir)"
+
+#: ../data/gui/preferences.ui.h:23
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>Düzen Tercihleri</b>"
+
+#: ../data/gui/preferences.ui.h:24
+msgid "Status Icon"
+msgstr "Durum Simgesi"
+
+#: ../data/gui/preferences.ui.h:25
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Kısayol Tuşları</b>"
+
+#: ../data/gui/preferences.ui.h:26
+msgid "Hotkeys"
+msgstr "Kısayol Tuşları"
+
+#: ../data/gui/preferences.ui.h:27
+msgid "Show Notifications"
+msgstr "Bildirimleri Göster"
+
+#: ../data/gui/preferences.ui.h:28
+msgid "<b>On-Screen Notifications</b>"
+msgstr "<b>Ekran Bildirimleri</b>"
+
+#: ../data/gui/preferences.ui.h:29
+msgid "OSD"
+msgstr "OSD"
+
+#: ../src/volumeicon.c:625
+msgid "Volume Up"
+msgstr "Sesi Aç"
+
+#: ../src/volumeicon.c:629
+msgid "Volume Down"
+msgstr "Sesi Kapat"
+
+#: ../src/volumeicon.c:633
+msgid "Mute"
+msgstr "Sessiz"
+
+#: ../src/volumeicon.c:640
+msgid "GTK+ Popup Window"
+msgstr "GTK+ Açılır Pencere"
+
+#: ../src/volumeicon.c:644
+msgid "libnotify"
+msgstr "libnotify"
+
+#: ../src/volumeicon.c:1313
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "Yapılandırma dosyası için kullanılacak alternatif ad, varsayılan hacim simgesidir"
+
+#: ../src/volumeicon.c:1316
+msgid "Mixer device name"
+msgstr "Karıştırıcı cihaz adı"
+
+#: ../src/volumeicon.c:1318
+msgid "Output version number and exit"
+msgstr "Çıkış sürüm numarası ve çıkış"
