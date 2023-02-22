@@ -1,0 +1,167 @@
+# Georgian translation for volumeicon.
+# Copyright (C) 2023 volumeicon's authors.
+# This file is distributed under the same license as the volumeicon package.
+# Temuri Doghonadze <temuri.doghonadze@gmail.com>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: volumeicon\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-16 18:28+0100\n"
+"PO-Revision-Date: 2023-02-22 09:58+0100\n"
+"Last-Translator: Temuri Doghonadze <temuri.doghonadze@gmail.com>\n"
+"Language-Team: Georgian <(nothing)>\n"
+"Language: ka\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: Poedit 3.2.2\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "მორგება"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Device"
+msgstr "მოწყობილობა"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "Channel"
+msgstr "არხი"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Linear Scale"
+msgstr "ხაზოვანი ზრდა"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "Logarithmic Scale"
+msgstr "ლოგარითმული ზრდა"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "Channels"
+msgstr "არხები"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Icon Theme"
+msgstr "ხატულების თემა"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "External mixer"
+msgstr "გარე მიქსერი"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "Volume adjustment"
+msgstr "ხმის მორგება"
+
+#: ../data/gui/preferences.ui.h:11
+msgid "0"
+msgstr "0"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "Use panel-specific icons if available"
+msgstr "შესაძლებლობის შემთხვევაში პანელის ხატულების გამოყენება"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Reverse scroll direction for volume adjustment"
+msgstr "საპირისპირო გადახვევის მიმართულება ხმის მორგებისთვის"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "<b>Status Icon</b>"
+msgstr "<b>სტატუსის ხატულა</b>"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "Mute Volume"
+msgstr "ხმის დადუმება"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "Show Slider"
+msgstr "ჩოჩიის ჩვენება"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>თაგუნას მარცხენა ღილაკის ქმედება</b>"
+
+#: ../data/gui/preferences.ui.h:18 ../src/volumeicon.c:899
+msgid "Open Mixer"
+msgstr "მიქსერის გახსნა"
+
+#: ../data/gui/preferences.ui.h:19
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>თაგუნას შუა ღილაკის ქმედება</b>"
+
+#: ../data/gui/preferences.ui.h:20
+msgid "Use Horizontal Slider"
+msgstr "ჰორიზონტალური ჩოჩიის გამოყენება"
+
+#: ../data/gui/preferences.ui.h:21
+msgid "Show Sound Level"
+msgstr "ხმის დონის ჩვენება"
+
+#: ../data/gui/preferences.ui.h:22
+msgid "Use Transparent Background (requires compositor)"
+msgstr "გამოიყენეთ გამჭვირვალე ფონი (მოითხოვს კომპოზიტორს)"
+
+#: ../data/gui/preferences.ui.h:23
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>განლაგების პარამეტრები</b>"
+
+#: ../data/gui/preferences.ui.h:24
+msgid "Status Icon"
+msgstr "მდგომარეობის ხატულა"
+
+#: ../data/gui/preferences.ui.h:25
+msgid "<b>Hotkeys</b>"
+msgstr "<b>კლავიატურის მალსახმობები</b>"
+
+#: ../data/gui/preferences.ui.h:26
+msgid "Hotkeys"
+msgstr "კლავიატურის მალსახმობები"
+
+#: ../data/gui/preferences.ui.h:27
+msgid "Show Notifications"
+msgstr "გაფრთხილებების ჩვენება"
+
+#: ../data/gui/preferences.ui.h:28
+msgid "<b>On-Screen Notifications</b>"
+msgstr "<b>შეტყობინებების ეკრანზე ჩვენება</b>"
+
+#: ../data/gui/preferences.ui.h:29
+msgid "OSD"
+msgstr "OSD"
+
+#: ../src/volumeicon.c:625
+msgid "Volume Up"
+msgstr "ხმის აწევა"
+
+#: ../src/volumeicon.c:629
+msgid "Volume Down"
+msgstr "ხმის დაწევა"
+
+#: ../src/volumeicon.c:633
+msgid "Mute"
+msgstr "დადუმება"
+
+#: ../src/volumeicon.c:640
+msgid "GTK+ Popup Window"
+msgstr "GTK+-ის მხტუნარა ფანჯარა"
+
+#: ../src/volumeicon.c:644
+msgid "libnotify"
+msgstr "libnotify"
+
+#: ../src/volumeicon.c:1313
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "კონფიგურაციის ფაილის სახელის ხელით მითითება. ნაგულისხმებია \"volumeicon\""
+
+#: ../src/volumeicon.c:1316
+msgid "Mixer device name"
+msgstr "მიქსერის მოწყობილობის სახელი"
+
+#: ../src/volumeicon.c:1318
+msgid "Output version number and exit"
+msgstr "ვერსიის ნომრის გამოტანა და გასვლა"
