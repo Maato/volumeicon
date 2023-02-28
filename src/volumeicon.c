@@ -63,9 +63,9 @@ enum NOTIFICATION {
 
 // About
 #define APPNAME "Volume Icon"
-#define COPYRIGHT "Copyright (c) Maato 2011"
+#define COPYRIGHT "Copyright (c) Mart G"
 #define COMMENTS "Volume control for your system tray."
-#define WEBSITE "http://softwarebakery.com/maato/volumeicon.html"
+#define WEBSITE "http://nullwise.com/volumeicon.html"
 
 // Scale constants
 #define SCALE_HIDE_DELAY 500
