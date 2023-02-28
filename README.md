@@ -7,7 +7,7 @@ Compilation
 
 ```raw
   $ ./autogen.sh
-  $ ./configure --prefix=/usr
+  $ ./configure
   $ make
   $ sudo make install
 ```
