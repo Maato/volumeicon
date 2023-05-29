@@ -1,0 +1,166 @@
+# Portuguese translations for volumeicon package.
+# Copyright (C) 2017 Maato <maato@softwarebakery.com>
+# This file is distributed under the same license as the volumeicon package.
+# André L. C. Moreira <andrelcmoreira@disroot.org>, 2023.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: volumeicon 0.5.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-02-16 18:28+0100\n"
+"PO-Revision-Date: 2023-05-28 15:57-0300\n"
+"Last-Translator: André L. C. Moreira <andrelcmoreira@disroot.org>\n"
+"Language-Team: Brazilian Portuguese\n"
+"Language: pt_BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: ../data/gui/preferences.ui.h:1
+msgid "Preferences"
+msgstr "Preferências"
+
+#: ../data/gui/preferences.ui.h:2
+msgid "Device"
+msgstr "Dispositivo"
+
+#: ../data/gui/preferences.ui.h:3
+msgid "Channel"
+msgstr "Canal"
+
+#: ../data/gui/preferences.ui.h:4
+msgid "Linear Scale"
+msgstr "Escala linear"
+
+#: ../data/gui/preferences.ui.h:5
+msgid "Logarithmic Scale"
+msgstr "Escala logarítmica"
+
+#: ../data/gui/preferences.ui.h:6
+msgid "<b>Alsa</b>"
+msgstr "<b>Alsa</b>"
+
+#: ../data/gui/preferences.ui.h:7
+msgid "Channels"
+msgstr "Canais"
+
+#: ../data/gui/preferences.ui.h:8
+msgid "Icon Theme"
+msgstr "Tema do ícone"
+
+#: ../data/gui/preferences.ui.h:9
+msgid "External mixer"
+msgstr "Mixer externo"
+
+#: ../data/gui/preferences.ui.h:10
+msgid "Volume adjustment"
+msgstr "Ajuste de volume"
+
+#: ../data/gui/preferences.ui.h:11
+msgid "0"
+msgstr "0"
+
+#: ../data/gui/preferences.ui.h:12
+msgid "Use panel-specific icons if available"
+msgstr "Utilizar ícones específicos do painel (se disponível)"
+
+#: ../data/gui/preferences.ui.h:13
+msgid "Reverse scroll direction for volume adjustment"
+msgstr "Rolagem do mouse para ajuste de volume"
+
+#: ../data/gui/preferences.ui.h:14
+msgid "<b>Status Icon</b>"
+msgstr "<b>Ícone de status</b>"
+
+#: ../data/gui/preferences.ui.h:15
+msgid "Mute Volume"
+msgstr "Deixar no volume mudo"
+
+#: ../data/gui/preferences.ui.h:16
+msgid "Show Slider"
+msgstr "Exibir o slider"
+
+#: ../data/gui/preferences.ui.h:17
+msgid "<b>Left Mouse Button Action</b>"
+msgstr "<b>Ação do botão esquerdo do mouse</b>"
+
+#: ../data/gui/preferences.ui.h:18 ../src/volumeicon.c:899
+msgid "Open Mixer"
+msgstr "Abrir o mixer"
+
+#: ../data/gui/preferences.ui.h:19
+msgid "<b>Middle Mouse Button Action</b>"
+msgstr "<b>Ação do botão do meio do mouse</b>"
+
+#: ../data/gui/preferences.ui.h:20
+msgid "Use Horizontal Slider"
+msgstr "Utilizar o slider horizontal"
+
+#: ../data/gui/preferences.ui.h:21
+msgid "Show Sound Level"
+msgstr "Mostrar o nível do som"
+
+#: ../data/gui/preferences.ui.h:22
+msgid "Use Transparent Background (requires compositor)"
+msgstr "Utilizar fundo transparente (requer um compositor)"
+
+#: ../data/gui/preferences.ui.h:23
+msgid "<b>Layout Preferences</b>"
+msgstr "<b>Preferências de layout</b>"
+
+#: ../data/gui/preferences.ui.h:24
+msgid "Status Icon"
+msgstr "Ícone de status"
+
+#: ../data/gui/preferences.ui.h:25
+msgid "<b>Hotkeys</b>"
+msgstr "<b>Teclas de atalho</b>"
+
+#: ../data/gui/preferences.ui.h:26
+msgid "Hotkeys"
+msgstr "Teclas de atalho"
+
+#: ../data/gui/preferences.ui.h:27
+msgid "Show Notifications"
+msgstr "Exibir notificações"
+
+#: ../data/gui/preferences.ui.h:28
+msgid "<b>On-Screen Notifications</b>"
+msgstr "<b>Notificações na tela</b>"
+
+#: ../data/gui/preferences.ui.h:29
+msgid "OSD"
+msgstr "OSD"
+
+#: ../src/volumeicon.c:625
+msgid "Volume Up"
+msgstr "Aumentar o volume"
+
+#: ../src/volumeicon.c:629
+msgid "Volume Down"
+msgstr "Diminuir o volume"
+
+#: ../src/volumeicon.c:633
+msgid "Mute"
+msgstr "Mudo"
+
+#: ../src/volumeicon.c:640
+msgid "GTK+ Popup Window"
+msgstr "Janela de popup GTK+"
+
+#: ../src/volumeicon.c:644
+msgid "libnotify"
+msgstr "libnotify"
+
+#: ../src/volumeicon.c:1313
+msgid "Alternate name to use for config file, default is volumeicon"
+msgstr "Nome alternativo para o arquivo de configuração, o padrão é volumeicon"
+
+#: ../src/volumeicon.c:1316
+msgid "Mixer device name"
+msgstr "Nome do dispositivo de mixagem"
+
+#: ../src/volumeicon.c:1318
+msgid "Output version number and exit"
+msgstr "Exibir a versão e sair"
